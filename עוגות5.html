@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Couture | אטלייה לקונדיטוריה עילית</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Assistant:wght@200;300;400;700&display=swap" rel="stylesheet">
+    <!-- Animation Libraries -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold-primary': '#C5A059',
+                        'dark-onyx': '#1A1A1A',
+                        'pearl': '#FCF9F5',
+                        'taupe': '#8E8279',
+                        'soft-rose': '#F9F1F0',
+                    },
+                    fontFamily: {
+                        serif: ['"Bodoni Moda"', 'serif'],
+                        sans: ['Assistant', 'sans-serif'],
+                        tradition: ['serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FCF9F5; font-family: 'Assistant', sans-serif; cursor: none; }
+        .font-serif { font-family: 'Bodoni Moda', serif; }
+        
+        #cursor {
+            width: 20px; height: 20px; background: #C5A059; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            transition: transform 0.2s ease; mix-blend-mode: exclusion;
+        }
+
+        .luxury-input {
+            background: transparent; border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+            padding: 1rem 0; width: 100%; outline: none; transition: border-color 0.4s;
+        }
+        .luxury-input:focus { border-color: #C5A059; }
+
+        #product-modal { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+        #product-modal.active { opacity: 1; pointer-events: auto; }
+        
+        #preloader {
+            position: fixed; inset: 0; background: #1A1A1A; z-index: 10000;
+            display: flex; align-items: center; justify-content: center; transition: opacity 1s ease;
+        }
+
+        .toast {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+            background: #1A1A1A; color: #FCF9F5; padding: 1rem 2rem;
+            border-radius: 2px; font-size: 0.875rem; letter-spacing: 0.1em;
+            z-index: 7000; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .gold-text-gradient {
+            background: linear-gradient(to right, #C5A059, #E5C78B, #C5A059);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <div id="cursor" class="hidden md:block"></div>
+    
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/972525000285?text=היי,%20הגעתי%20מהאתר%20ואשמח%20להזמין%20עוגה" target="_blank" class="fixed bottom-6 right-6 z-[9000] bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_15px_40px_rgba(37,211,102,0.6)] transition-all duration-300 group">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        <span class="absolute right-16 bg-white text-dark-onyx text-xs px-4 py-2 rounded-lg font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">זמינים עבורכם בוואטסאפ!</span>
+    </a>
+
+    <div id="preloader">
+        <div class="text-center">
+            <h1 class="text-gold-primary font-serif italic text-4xl mb-4 tracking-widest animate-pulse">Sweet Couture</h1>
+            <div class="w-12 h-[1px] bg-gold-primary mx-auto"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 w-full z-[5000] py-8 transition-all duration-500 px-6 md:px-12">
+        <div class="max-w-[1600px] mx-auto flex justify-between items-center">
+            <div class="flex-1 hidden lg:flex gap-8 text-[10px] uppercase tracking-[0.3em] font-bold text-dark-onyx">
+                <a href="#catalog" class="hover:text-gold-primary transition-colors">קולקציות</a>
+                <a href="#process" class="hover:text-gold-primary transition-colors">האטלייה</a>
+            </div>
+            
+            <a href="#" class="text-2xl md:text-3xl font-serif italic text-dark-onyx text-center flex-1">
+                Sweet Couture <span class="block text-[10px] not-italic tracking-[0.5em] uppercase font-sans mt-1">Studio</span>
+            </a>
+
+            <div class="flex-1 flex justify-end items-center gap-6">
+                <button id="hamburger-icon" onclick="toggleMobileMenu()" class="lg:hidden flex flex-col gap-1.5 z-[5001]">
+                    <span class="w-6 h-[1px] bg-dark-onyx transition-all"></span>
+                    <span class="w-6 h-[1px] bg-dark-onyx transition-all"></span>
+                    <span class="w-6 h-[1px] bg-dark-onyx transition-all"></span>
+                </button>
+                <a href="#contact" class="hidden lg:block text-[10px] uppercase tracking-[0.3em] font-bold border-b border-dark-onyx pb-1 hover:text-gold-primary hover:border-gold-primary transition-all">הזמנה אישית</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-pearl z-[4500] opacity-0 pointer-events-none transition-all duration-500 flex flex-col items-center justify-center text-center">
+        <ul class="space-y-8 text-2xl font-serif italic text-dark-onyx">
+            <li><a href="#catalog" onclick="toggleMobileMenu()">הקולקציה</a></li>
+            <li><a href="#process" onclick="toggleMobileMenu()">תהליך היצירה</a></li>
+            <li><a href="#about" onclick="toggleMobileMenu()">הסיפור שלנו</a></li>
+            <li><a href="#contact" onclick="toggleMobileMenu()">צרו קשר</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="h-screen relative flex items-center justify-center overflow-hidden bg-dark-onyx">
+            <div class="absolute inset-0 opacity-60">
+                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974" class="w-full h-full object-cover scale-110" alt="Hero">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark-onyx/40 to-dark-onyx"></div>
+            <div class="relative z-10 text-center text-white px-6 mt-16" data-aos="zoom-out" data-aos-duration="1500">
+                <h3 class="font-serif italic text-xl md:text-3xl mb-4 text-gold-primary drop-shadow-md">The Art of Fine Pastry</h3>
+                <h1 class="text-6xl md:text-8xl lg:text-9xl font-serif mb-8 tracking-tight drop-shadow-2xl">Pure Elegance</h1>
+                <p class="text-pearl/90 text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto drop-shadow-md">קונדיטוריית הבוטיק המובילה בנתיבות והסביבה. יצירות מופת של טעם ועיצוב לאירועים בלתי נשכחים.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="#catalog" class="inline-block bg-white text-dark-onyx px-12 py-5 text-[10px] md:text-xs font-bold uppercase tracking-[0.4em] hover:bg-gold-primary hover:text-white transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">גלו את הקולקציה</a>
+                    <a href="#contact" class="inline-block border border-white/50 text-white backdrop-blur-sm px-10 py-5 text-[10px] md:text-xs font-bold uppercase tracking-[0.4em] hover:bg-white/10 transition-all duration-500">הזמנה מותאמת אישית</a>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-70">
+                <span class="text-[9px] uppercase tracking-[0.4em] text-white">גללו מטה</span>
+                <div class="w-[1px] h-12 bg-white/30 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full bg-white origin-top animate-[scaleY_2s_infinite]"></div>
+                </div>
+            </div>
+            <style>
+                @keyframes scaleY { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+            </style>
+        </section>
+
+        <!-- Catalog Section -->
+        <section id="catalog" class="py-24 md:py-32 bg-pearl">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text- gold-primary font-serif italic text-4xl md:text-6xl mb-6" data-aos="fade-up">הקולקציות שלנו</h2>
+                    <div class="flex flex-wrap justify-center gap-4 md:gap-8 mt-10">
+                        <button onclick="filterCatalog('הכל')" class="filter-btn active text-[10px] tracking-widest uppercase border border-dark-onyx/10 px-6 py-2 rounded-full hover:border-gold-primary transition-all">הכל</button>
+                        <button onclick="filterCatalog('חתימת השף')" class="filter-btn text-[10px] tracking-widest uppercase border border-dark-onyx/10 px-6 py-2 rounded-full hover:border-gold-primary transition-all">חתימת השף</button>
+                        <button onclick="filterCatalog('חתונות')" class="filter-btn text-[10px] tracking-widest uppercase border border-dark-onyx/10 px-6 py-2 rounded-full hover:border-gold-primary transition-all">חתונות</button>
+                    </div>
+                </div>
+                <div id="luxury-grid" class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 transition-all duration-500">
+                    <!-- Dynamic Items -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section id="process" class="py-24 md:py-32 bg-pearl scroll-mt-20">
+            <div class="container mx-auto px-6 md:px-12">
+                <div class="text-center mb-20 md:mb-32" data-aos="fade-up">
+                    <h3 class="text-gold-primary font-tradition tracking-[0.4em] mb-4 uppercase text-xs md:text-sm">L'Atelier</h3>
+                    <h4 class="text-4xl md:text-6xl font-serif italic text-dark-onyx">אמנות היצירה</h4>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12 max-w-6xl mx-auto">
+                    <!-- Step 1 -->
+                    <div class="text-center group" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-24 h-24 mx-auto rounded-full border border-dark-onyx/10 flex items-center justify-center mb-8 group-hover:border-gold-primary group-hover:bg-gold-primary group-hover:text-white transition-all duration-500 shadow-sm">
+                            <span class="font-tradition text-3xl font-light">I</span>
+                        </div>
+                        <h5 class="text-2xl font-serif mb-4 text-dark-onyx">חומרי גלם משובחים</h5>
+                        <p class="text-taupe font-light text-sm md:text-base leading-relaxed px-4">שוקולד בלגי מעולה, מקלות וניל מובחרים ומחית פירות יער אמיתית. אנו לא מתפשרים על איכות.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="text-center group" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-24 h-24 mx-auto rounded-full border border-dark-onyx/10 flex items-center justify-center mb-8 group-hover:border-gold-primary group-hover:bg-gold-primary group-hover:text-white transition-all duration-500 shadow-sm">
+                            <span class="font-tradition text-3xl font-light">II</span>
+                        </div>
+                        <h5 class="text-2xl font-serif mb-4 text-dark-onyx">דיוק ועבודת יד</h5>
+                        <p class="text-taupe font-light text-sm md:text-base leading-relaxed px-4">כל עוגה נאפית, נחתכת ומורכבת ביד. צוות הקונדיטורים מקדיש שעות כדי להבטיח שלמות בכל שכבה.</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="text-center group" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-24 h-24 mx-auto rounded-full border border-dark-onyx/10 flex items-center justify-center mb-8 group-hover:border-gold-primary group-hover:bg-gold-primary group-hover:text-white transition-all duration-500 shadow-sm">
+                            <span class="font-tradition text-3xl font-light">III</span>
+                        </div>
+                        <h5 class="text-2xl font-serif mb-4 text-dark-onyx">גימור הוט קוטור</h5>
+                        <p class="text-taupe font-light text-sm md:text-base leading-relaxed px-4">נגיעות זהב טהור אכיל, עלי כותרת עדינים וזיגוג מראה מבריק. עיצוב שעוצר את הנשימה.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote -->
+        <section id="about" class="py-32 md:py-48 text-center bg-soft-rose relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-pearl/50 to-transparent"></div>
+            <div class="max-w-5xl mx-auto px-6 relative z-10" data-aos="fade-up">
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-serif leading-tight text-dark-onyx italic mb-10 md:mb-14">"עוגה צריכה להיראות כמו חלום שמתגשם, ולהרגיש כמו זיכרון מתוק מביס ראשון."</h2>
+                <div class="flex flex-col items-center justify-center">
+                    <span class="font-tradition tracking-[0.4em] text-dark-onyx text-xs md:text-sm uppercase mb-3">Chef Pâtissier</span>
+                    <span class="font-serif italic text-taupe">אמנות האפייה מאז 1998</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="py-32 md:py-48 bg-dark-onyx text-pearl relative overflow-hidden border-t border-gold-primary/20">
+            <div class="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965')] bg-cover bg-center mix-blend-luminosity"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx via-dark-onyx/90 to-dark-onyx/80"></div>
+            
+            <div class="container mx-auto px-6 md:px-12 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                <div data-aos="fade-left">
+                    <h3 class="text-gold-primary font-tradition tracking-[0.4em] mb-4 uppercase text-xs">Sur Mesure</h3>
+                    <h4 class="text-4xl md:text-6xl font-serif italic text-white mb-6">הזמנה פרטית מיוחדת</h4>
+                    <p class="text-pearl/70 font-light mb-10 max-w-lg leading-relaxed text-lg">
+                        שירותי VIP ומשלוחי בוטיק לאזור נתיבות, שדרות, אופקים והסביבה. ספרו לנו על החלום שלכם, ואנחנו ניצור עבורכם יצירת מופת שתרשים כל אורח.
+                    </p>
+                    
+                    <form action="https://formspree.io/f/xlgpwvye" method="POST" onsubmit="handleContactSubmit(event)" class="space-y-6 max-w-lg bg-white/5 backdrop-blur-md p-8 md:p-10 border border-white/10 rounded-sm shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold-primary via-white to-gold-primary"></div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input type="text" name="name" required placeholder="שם מלא" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full">
+                            <input type="tel" name="phone" required placeholder="טלפון לחזרה" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full">
+                        </div>
+                        <input type="email" name="email" required placeholder="כתובת אימייל" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full">
+                        <textarea name="message" required placeholder="ספרו לנו על האירוע שלכם (תאריך, מיקום, חזון)..." rows="4" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full resize-none"></textarea>
+                        
+                        <label class="flex items-center gap-3 text-white/80 text-sm cursor-pointer mt-4">
+                            <input type="checkbox" name="delivery_netivot_area" value="Yes" class="accent-gold-primary w-4 h-4" checked>
+                            <span>אבקש משלוח VIP בנתיבות והסביבה</span>
+                        </label>
+
+                        <button type="submit" class="w-full mt-8 py-5 bg-gold-primary text-dark-onyx font-bold text-xs uppercase tracking-[0.3em] hover:bg-white transition-colors duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]">
+                            שליחת בקשה אישית לאטלייה
+                        </button>
+                    </form>
+                </div>
+                <div class="relative h-[500px] lg:h-[700px] rounded-t-[150px] rounded-b-sm overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10" data-aos="fade-right">
+                    <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965" alt="Atelier Luxury Cake" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-dark-onyx/20 hover:bg-transparent transition-colors duration-700"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark-onyx text-pearl py-24 px-6 md:px-12">
+        <div class="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-12">
+            <div class="xl:col-span-5">
+                <h2 class="text-4xl font-serif mb-6">הצטרפו למועדון <span class="gold-text-gradient italic block mt-2">הפריבé</span></h2>
+                <form onsubmit="handleSubscribe(event)" class="flex border-b border-white/20 pb-4 max-w-md">
+                    <input type="email" required placeholder="כתובת אימייל" class="bg-transparent flex-1 outline-none text-xs uppercase text-white placeholder-pearl/30">
+                    <button type="submit" class="text-gold-primary font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">הירשמו</button>
+                </form>
+            </div>
+            <div class="xl:col-span-7 flex flex-col items-end gap-4 text-pearl/50 text-xs tracking-widest uppercase">
+                <p>© 2026 SWEET COUTURE STUDIO. ALL RIGHTS RESERVED.</p>
+                <div class="flex gap-8">
+                    <a href="tel:0525000285" class="hover:text-gold-primary">052-5000-285</a>
+                    <a href="mailto:r.levi020@gmail.com" class="hover:text-gold-primary">Email</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="product-modal" class="fixed inset-0 z-[6000] flex items-center justify-center p-0 md:p-6">
+        <div class="absolute inset-0 bg-dark-onyx/90 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="bg-pearl w-full h-full md:h-auto md:max-w-5xl relative z-10 flex flex-col md:flex-row overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-6 right-6 z-20 text-dark-onyx"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            <div class="w-full md:w-1/2 h-80 md:h-[600px] relative">
+                <img id="modal-img" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx/30 to-transparent"></div>
+            </div>
+            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-pearl">
+                <span id="modal-category" class="text-gold-primary font-bold text-[10px] tracking-[0.3em] uppercase mb-4">Category</span>
+                <h2 id="modal-title" class="text-3xl md:text-5xl font-serif italic mb-4 text-dark-onyx">Name</h2>
+                <p id="modal-price-display" class="text-2xl font-light mb-6 text-dark-onyx/80">₪0</p>
+                
+                <div class="w-12 h-[1px] bg-gold-primary mb-6"></div>
+                
+                <p id="modal-desc" class="text-taupe font-light mb-10 leading-relaxed">Description goes here.</p>
+                
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" class="mb-4">
+                    <input type="hidden" name="cmd" value="_xclick">
+                    <input type="hidden" name="business" value="r.levi020@gmail.com"> 
+                    <input type="hidden" name="currency_code" value="ILS">
+                    <input type="hidden" name="item_name" id="paypal-item-name" value="">
+                    <input type="hidden" name="amount" id="paypal-amount" value="">
+                    <button type="submit" onclick="notifyPurchase()" class="w-full py-4 bg-dark-onyx text-white font-bold text-xs uppercase tracking-[0.3em] hover:bg-gold-primary transition-all shadow-md">תשלום מאובטח ב-PayPal</button>
+                </form>
+
+                <div class="relative flex py-4 items-center">
+                    <div class="flex-grow border-t border-dark-onyx/10"></div>
+                    <span class="flex-shrink-0 mx-4 text-dark-onyx/40 text-[10px] uppercase tracking-widest font-bold">או רכישה מהירה</span>
+                    <div class="flex-grow border-t border-dark-onyx/10"></div>
+                </div>
+
+                <button onclick="orderViaWhatsapp()" class="w-full py-4 bg-[#25D366] text-white font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#20bd5a] hover:shadow-lg transition-all flex justify-center items-center gap-3">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    הזמנה מיידית בוואטסאפ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        const luxuryCatalog = [
+            { id: 1, name: "The Pearl Cake", category: "חתימת השף", price: "550", img: "https://images.unsplash.com/photo-1535254973040-607b474cb80d?q=80&w=1974", cols: "md:col-span-12 xl:col-span-8", desc: "עוגת וניל מדגסקר קלאסית עם פניני שוקולד לבן וקרם מסקרפונה עשיר." },
+            { id: 2, name: "Noir Velvet", category: "חתימת השף", price: "420", img: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?q=80&w=2070", cols: "md:col-span-6 xl:col-span-4", desc: "שילוב דרמטי של קקאו כהה מבלגיה ומוס שוקולד מריר 70%." },
+            { id: 3, name: "Le Mariage", category: "חתונות", price: "1200", img: "https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=1936", cols: "md:col-span-6 xl:col-span-4", desc: "עוגת חתונה קלאסית עם עיטורי פרחי סוכר עבודת יד." }
+        ];
+
+        let currentModalItem = null;
+
+        function init() {
+            AOS.init({ once: true, duration: 1000 });
+            renderLuxuryGrid('הכל');
+            setupHeaderScroll();
+            setupCursor();
+        }
+
+        function setupCursor() {
+            const cursor = document.getElementById('cursor');
+            document.addEventListener('mousemove', e => {
+                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+            });
+            document.querySelectorAll('button, a').forEach(el => {
+                el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 2.5 }));
+                el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1 }));
+            });
+        }
+
+        function setupHeaderScroll() {
+            const header = document.getElementById('main-header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) header.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
+                else header.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
+            });
+        }
+
+        function renderLuxuryGrid(filter) {
+            const grid = document.getElementById('luxury-grid');
+            const items = filter === 'הכל' ? luxuryCatalog : luxuryCatalog.filter(i => i.category === filter);
+            grid.innerHTML = items.map(item => `
+                <div class="${item.cols} group" data-aos="fade-up">
+                    <div class="relative h-[450px] overflow-hidden bg-dark-onyx cursor-pointer" onclick="openModal(${item.id})">
+                        <img src="${item.img}" class="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-all duration-1000">
+                        <div class="absolute bottom-8 right-8 z-10 text-white text-right">
+                            <h5 class="text-gold-primary text-[9px] tracking-widest uppercase">${item.category}</h5>
+                            <h6 class="text-2xl font-serif italic">${item.name}</h6>
+                            <span class="text-lg">₪${item.price}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCatalog(cat) {
+            renderLuxuryGrid(cat);
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('bg-dark-onyx', b.innerText.includes(cat)));
+        }
+
+        function openModal(id) {
+            const item = luxuryCatalog.find(i => i.id === id);
+            currentModalItem = item;
+            document.getElementById('modal-img').src = item.img;
+            document.getElementById('modal-title').innerText = item.name;
+            document.getElementById('modal-category').innerText = item.category;
+            document.getElementById('modal-price-display').innerText = `₪${item.price}`;
+            document.getElementById('modal-desc').innerText = item.desc;
+            document.getElementById('paypal-item-name').value = item.name;
+            document.getElementById('paypal-amount').value = item.price;
+            document.getElementById('product-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function orderViaWhatsapp() {
+            if(!currentModalItem) return;
+            const text = encodeURIComponent(`היי Sweet Couture! 🍰\nאשמח להזמין את העוגה:\n*${currentModalItem.name}*\nמחיר: ₪${currentModalItem.price}\n\nהאם פנוי להזמנה בקרוב?`);
+            window.open(`https://wa.me/972525000285?text=${text}`, '_blank');
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const isOpen = menu.classList.contains('opacity-100');
+            menu.classList.toggle('opacity-100', !isOpen);
+            menu.classList.toggle('pointer-events-auto', !isOpen);
+            document.body.style.overflow = isOpen ? 'auto' : 'hidden';
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'שולח נתונים לאטלייה...';
+            btn.disabled = true;
+
+            fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    showToast('הבקשה נשלחה בהצלחה! השף שלנו יחזור אליכם בהקדם.');
+                    form.reset();
+                } else {
+                    showToast('אירעה שגיאה. אנא נסו לשלוח הודעת וואטסאפ במקום.');
+                }
+            }).catch(error => {
+                showToast('שגיאת תקשורת. נא נסו שוב מאוחר יותר.');
+            }).finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            showToast('תודה שהצטרפת למועדון!');
+            e.target.reset();
+        }
+
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerText = msg;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        function notifyPurchase() { showToast('מעבר לתשלום...'); }
+
+        window.onload = () => {
+            init();
+            setTimeout(() => {
+                document.getElementById('preloader').style.opacity = '0';
+                setTimeout(() => document.getElementById('preloader').remove(), 1000);
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
