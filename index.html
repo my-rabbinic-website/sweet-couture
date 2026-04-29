@@ -3,460 +3,730 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweet Couture | אטלייה לקונדיטוריה עילית</title>
+    <title>Sweet Couture | קונדיטוריית בוטיק בנתיבות</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Sweet Couture - קונדיטוריית בוטיק בנתיבות. עוגות ראווה, מארזים יוקרתיים וקינוחי הוט קוטור לאירועים מיוחדים וחתונות.">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Assistant:wght@200;300;400;700&display=swap" rel="stylesheet">
-    <!-- Animation Libraries -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Assistant:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP & Lenis (Smooth Scroll) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.32/dist/lenis.min.js"></script>
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'gold-primary': '#C5A059',
-                        'dark-onyx': '#1A1A1A',
-                        'pearl': '#FCF9F5',
+                        'gold-primary': '#D4AF37',
+                        'gold-light': '#F3E5AB',
+                        'dark-onyx': '#111111',
+                        'pearl': '#F9F8F6',
                         'taupe': '#8E8279',
-                        'soft-rose': '#F9F1F0',
                     },
                     fontFamily: {
                         serif: ['"Bodoni Moda"', 'serif'],
                         sans: ['Assistant', 'sans-serif'],
-                        tradition: ['serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #FCF9F5; font-family: 'Assistant', sans-serif; cursor: none; }
+        /* Base Styling & Custom Scrollbar */
+        body { background-color: #F9F8F6; font-family: 'Assistant', sans-serif; cursor: none; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #111111; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 5px; }
+
+        /* Typography Enhancements */
         .font-serif { font-family: 'Bodoni Moda', serif; }
+        .text-outline { -webkit-text-stroke: 1.5px rgba(255,255,255,0.2); color: transparent; }
         
+        /* Noise Texture for Premium Print Feel */
+        .noise-bg::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999; opacity: 0.6; mix-blend-mode: multiply;
+        }
+
+        /* Custom Cursor */
         #cursor {
-            width: 20px; height: 20px; background: #C5A059; border-radius: 50%;
-            position: fixed; pointer-events: none; z-index: 9999;
-            transition: transform 0.2s ease; mix-blend-mode: exclusion;
+            width: 16px; height: 16px; background: #D4AF37; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 10000; top: 0; left: 0;
+            transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference;
+        }
+        #cursor.hover-mode { width: 80px; height: 80px; background: rgba(255,255,255,0.9); mix-blend-mode: normal; }
+        #cursor.hover-mode::after {
+            content: "צפייה"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 14px; font-weight: bold; color: #111111; letter-spacing: 1px;
         }
 
-        .luxury-input {
-            background: transparent; border-bottom: 1px solid rgba(26, 26, 26, 0.1);
-            padding: 1rem 0; width: 100%; outline: none; transition: border-color 0.4s;
-        }
-        .luxury-input:focus { border-color: #C5A059; }
-
-        #product-modal { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
-        #product-modal.active { opacity: 1; pointer-events: auto; }
+        /* UI Elements */
+        .magnetic-btn { display: inline-block; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+        .clip-text { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%); transition: clip-path 1s cubic-bezier(0.77, 0, 0.175, 1); }
+        .clip-text.is-visible { clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0); }
         
-        #preloader {
-            position: fixed; inset: 0; background: #1A1A1A; z-index: 10000;
-            display: flex; align-items: center; justify-content: center; transition: opacity 1s ease;
+        .luxury-input {
+            background: transparent; border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding: 1.5rem 0 0.5rem 0; width: 100%; outline: none; transition: border-color 0.4s; color: white;
+            font-size: 1.125rem;
         }
+        .luxury-input:focus { border-color: #D4AF37; }
 
-        .toast {
-            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
-            background: #1A1A1A; color: #FCF9F5; padding: 1rem 2rem;
-            border-radius: 2px; font-size: 0.875rem; letter-spacing: 0.1em;
-            z-index: 7000; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+        /* Cart Drawer */
+        #cart-drawer { transform: translateX(-100%); transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1); }
+        #cart-drawer.open { transform: translateX(0); }
 
-        .gold-text-gradient {
-            background: linear-gradient(to right, #C5A059, #E5C78B, #C5A059);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+        /* Quick View Modal */
+        #quickview-modal { transition: opacity 0.4s ease, visibility 0.4s ease; }
+        #quickview-modal.active { opacity: 1; visibility: visible; }
+        #quickview-content { transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); transform: scale(0.95) translateY(20px); }
+        #quickview-modal.active #quickview-content { transform: scale(1) translateY(0); }
+        
+        /* Preloader */
+        #preloader { position: fixed; inset: 0; background: #111111; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .curtain { position: absolute; inset: 0; background: #D4AF37; transform-origin: top; transform: scaleY(0); }
+
+        /* Marquee Animation for RTL */
+        .marquee-track { display: flex; width: max-content; animation: scroll 40s linear infinite; }
+        .marquee-container:hover .marquee-track { animation-play-state: paused; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="noise-bg">
 
-    <div id="cursor" class="hidden md:block"></div>
-    
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/972525000285?text=היי,%20הגעתי%20מהאתר%20ואשמח%20להזמין%20עוגה" target="_blank" class="fixed bottom-6 right-6 z-[9000] bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_15px_40px_rgba(37,211,102,0.6)] transition-all duration-300 group">
-        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-        <span class="absolute right-16 bg-white text-dark-onyx text-xs px-4 py-2 rounded-lg font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">זמינים עבורכם בוואטסאפ!</span>
-    </a>
+    <!-- Custom Cursor -->
+    <div id="cursor" class="hidden lg:block"></div>
 
+    <!-- Preloader -->
     <div id="preloader">
-        <div class="text-center">
-            <h1 class="text-gold-primary font-serif italic text-4xl mb-4 tracking-widest animate-pulse">Sweet Couture</h1>
-            <div class="w-12 h-[1px] bg-gold-primary mx-auto"></div>
+        <div class="curtain" id="curtain"></div>
+        <div class="relative z-10 text-center overflow-hidden">
+            <h1 id="loader-text" class="text-gold-primary font-serif italic text-5xl md:text-7xl tracking-widest translate-y-[100%]">Sweet Couture</h1>
         </div>
     </div>
 
-    <!-- Header -->
-    <header id="main-header" class="fixed top-0 w-full z-[5000] py-8 transition-all duration-500 px-6 md:px-12">
-        <div class="max-w-[1600px] mx-auto flex justify-between items-center">
-            <div class="flex-1 hidden lg:flex gap-8 text-[10px] uppercase tracking-[0.3em] font-bold text-dark-onyx">
-                <a href="#catalog" class="hover:text-gold-primary transition-colors">קולקציות</a>
-                <a href="#process" class="hover:text-gold-primary transition-colors">האטלייה</a>
+    <!-- Header Navigation -->
+    <header id="main-header" class="fixed top-0 w-full z-[5000] py-6 px-6 md:px-12 mix-blend-difference text-white transition-all duration-500">
+        <div class="max-w-[1800px] mx-auto flex justify-between items-center">
+            <div class="flex-1 hidden lg:flex gap-10 text-xs uppercase tracking-[0.3em] font-bold">
+                <a href="#catalog" class="hover-trigger relative group">
+                    קולקציות
+                    <span class="absolute -bottom-1 right-0 w-0 h-[1.5px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#process" class="hover-trigger relative group">
+                    האטלייה
+                    <span class="absolute -bottom-1 right-0 w-0 h-[1.5px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#reviews" class="hover-trigger relative group">
+                    לקוחות
+                    <span class="absolute -bottom-1 right-0 w-0 h-[1.5px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </a>
             </div>
             
-            <a href="#" class="text-2xl md:text-3xl font-serif italic text-dark-onyx text-center flex-1">
-                Sweet Couture <span class="block text-[10px] not-italic tracking-[0.5em] uppercase font-sans mt-1">Studio</span>
+            <a href="#" class="text-3xl md:text-4xl font-serif italic text-center flex-1 hover-trigger magnetic-btn">
+                Sweet Couture <span class="block text-xs not-italic tracking-[0.6em] uppercase font-sans mt-2 opacity-70">Studio</span>
             </a>
 
-            <div class="flex-1 flex justify-end items-center gap-6">
-                <button id="hamburger-icon" onclick="toggleMobileMenu()" class="lg:hidden flex flex-col gap-1.5 z-[5001]">
-                    <span class="w-6 h-[1px] bg-dark-onyx transition-all"></span>
-                    <span class="w-6 h-[1px] bg-dark-onyx transition-all"></span>
-                    <span class="w-6 h-[1px] bg-dark-onyx transition-all"></span>
+            <div class="flex-1 flex justify-end items-center gap-4 md:gap-8">
+                <!-- Mobile Menu Toggle -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden hover-trigger relative flex items-center justify-center p-2 z-[6000]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                <a href="#contact" class="hidden lg:block text-[10px] uppercase tracking-[0.3em] font-bold border-b border-dark-onyx pb-1 hover:text-gold-primary hover:border-gold-primary transition-all">הזמנה אישית</a>
+                <!-- Cart Icon -->
+                <button onclick="toggleCart()" class="hover-trigger relative flex items-center gap-2 md:gap-3">
+                    <span id="cart-count" class="absolute -top-3 -right-3 bg-gold-primary text-dark-onyx text-[10px] md:text-xs w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full font-bold opacity-0 transition-opacity">0</span>
+                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    <span class="hidden md:block text-xs uppercase tracking-widest font-bold">סל קניות</span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="fixed inset-0 bg-pearl z-[4500] opacity-0 pointer-events-none transition-all duration-500 flex flex-col items-center justify-center text-center">
-        <ul class="space-y-8 text-2xl font-serif italic text-dark-onyx">
-            <li><a href="#catalog" onclick="toggleMobileMenu()">הקולקציה</a></li>
-            <li><a href="#process" onclick="toggleMobileMenu()">תהליך היצירה</a></li>
-            <li><a href="#about" onclick="toggleMobileMenu()">הסיפור שלנו</a></li>
-            <li><a href="#contact" onclick="toggleMobileMenu()">צרו קשר</a></li>
-        </ul>
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-dark-onyx text-pearl z-[5500] opacity-0 pointer-events-none transition-all duration-500 flex flex-col items-center justify-center">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-pearl hover:text-gold-primary transition-colors p-2">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <nav class="flex flex-col items-center gap-8 text-3xl font-serif italic">
+            <a href="#catalog" onclick="toggleMobileMenu()" class="hover:text-gold-primary transition-colors">קולקציות</a>
+            <a href="#process" onclick="toggleMobileMenu()" class="hover:text-gold-primary transition-colors">האטלייה</a>
+            <a href="#reviews" onclick="toggleMobileMenu()" class="hover:text-gold-primary transition-colors">לקוחות</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="hover:text-gold-primary transition-colors mt-6 text-gold-primary border border-gold-primary px-10 py-4 rounded-full text-lg not-italic font-sans font-bold uppercase tracking-widest">הזמנה פרטית</a>
+        </nav>
+    </div>
+
+    <!-- Shopping Cart Drawer -->
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-dark-onyx/60 backdrop-blur-sm z-[5001] opacity-0 pointer-events-none transition-opacity duration-500"></div>
+    <div id="cart-drawer" class="fixed top-0 left-0 h-full w-full sm:w-[450px] md:w-[500px] bg-pearl z-[5002] shadow-2xl flex flex-col">
+        <div class="p-6 md:p-8 border-b border-dark-onyx/10 flex justify-between items-center">
+            <h2 class="font-serif italic text-3xl md:text-4xl text-dark-onyx">ההזמנה שלך</h2>
+            <button onclick="toggleCart()" class="hover-trigger text-dark-onyx/50 hover:text-dark-onyx transition-colors">
+                <svg class="w-7 h-7 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 md:space-y-8">
+            <!-- Items injected by JS -->
+            <div class="h-full flex flex-col items-center justify-center text-taupe opacity-50">
+                <svg class="w-16 h-16 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                <p class="font-light text-xl">העגלה שלך ריקה</p>
+            </div>
+        </div>
+        
+        <div class="p-6 md:p-8 bg-white border-t border-dark-onyx/5">
+            <div class="flex justify-between items-center mb-6 md:mb-8 text-xl md:text-2xl">
+                <span class="font-light text-dark-onyx">סך הכל:</span>
+                <span id="cart-total" class="font-serif italic text-2xl md:text-3xl text-dark-onyx">₪0</span>
+            </div>
+            <button onclick="checkoutViaWhatsapp()" class="w-full py-5 md:py-6 bg-dark-onyx text-white font-bold text-xs md:text-sm uppercase tracking-[0.2em] hover:bg-gold-primary transition-all flex justify-center items-center gap-3 magnetic-btn hover-trigger">
+                <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                מעבר לתשלום בוואטסאפ
+            </button>
+            <p class="text-center text-[10px] md:text-xs text-taupe mt-4 md:mt-5 font-bold">משלוחי VIP בנתיבות, שדרות והסביבה</p>
+        </div>
+    </div>
+
+    <!-- Quick View Product Modal -->
+    <div id="quickview-modal" class="fixed inset-0 z-[6000] invisible flex items-center justify-center p-0 sm:p-4 md:p-10 opacity-0">
+        <div class="absolute inset-0 bg-dark-onyx/80 backdrop-blur-md" onclick="closeQuickView()"></div>
+        <div id="quickview-content" class="bg-pearl w-full max-w-6xl h-full sm:h-[85vh] md:h-[700px] relative z-10 flex flex-col md:flex-row shadow-2xl sm:rounded-sm overflow-hidden">
+            <button onclick="closeQuickView()" class="absolute top-4 right-4 z-20 text-dark-onyx bg-white/70 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors hover-trigger">
+                <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="w-full md:w-1/2 h-[40vh] sm:h-[45%] md:h-full relative overflow-hidden bg-dark-onyx flex-shrink-0">
+                <img id="qv-img" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx/40 to-transparent pointer-events-none"></div>
+            </div>
+            
+            <div class="w-full md:w-1/2 h-[60vh] sm:h-[55%] md:h-full p-6 sm:p-8 md:p-14 flex flex-col bg-pearl overflow-y-auto">
+                <span id="qv-category" class="text-gold-primary text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase mb-2 md:mb-4 font-bold block">Category</span>
+                <h2 id="qv-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-dark-onyx mb-2 md:mb-4 leading-tight">Title</h2>
+                <p id="qv-price" class="text-xl md:text-3xl font-light text-taupe mb-6 md:mb-8">₪0</p>
+                
+                <div class="w-12 md:w-16 h-[1px] bg-gold-primary/50 mb-6 md:mb-8"></div>
+                
+                <p id="qv-desc" class="text-dark-onyx/80 font-light mb-8 leading-relaxed text-base md:text-lg flex-grow">Description...</p>
+                
+                <div class="mt-auto pt-4 border-t border-dark-onyx/10 md:border-none md:pt-0">
+                    <label class="block text-[10px] md:text-xs uppercase tracking-widest text-taupe mb-3 md:mb-4">כמות</label>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 md:gap-6">
+                        <div class="flex items-center border border-dark-onyx/20 rounded-full h-12 md:h-14 w-full sm:w-32">
+                            <button onclick="updateQvQty(-1)" class="flex-1 h-full flex items-center justify-center text-dark-onyx hover:text-gold-primary transition-colors text-xl">-</button>
+                            <span id="qv-qty" class="font-bold text-dark-onyx text-lg w-8 text-center">1</span>
+                            <button onclick="updateQvQty(1)" class="flex-1 h-full flex items-center justify-center text-dark-onyx hover:text-gold-primary transition-colors text-xl">+</button>
+                        </div>
+                        
+                        <button onclick="addFromQuickView()" class="flex-1 bg-dark-onyx text-white h-12 md:h-14 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.2em] hover:bg-gold-primary transition-colors flex items-center justify-center gap-2 md:gap-3 magnetic-btn hover-trigger">
+                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            הוסף לעגלה
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <main>
-        <!-- Hero Section -->
+        <!-- Hero Section with Parallax -->
         <section class="h-screen relative flex items-center justify-center overflow-hidden bg-dark-onyx">
-            <div class="absolute inset-0 opacity-60">
-                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974" class="w-full h-full object-cover scale-110" alt="Hero">
+            <div class="hero-bg absolute inset-0 w-full h-[120%] -top-[10%]">
+                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974" class="w-full h-full object-cover opacity-50" alt="Luxury Cake Background">
             </div>
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark-onyx/40 to-dark-onyx"></div>
-            <div class="relative z-10 text-center text-white px-6 mt-16" data-aos="zoom-out" data-aos-duration="1500">
-                <h3 class="font-serif italic text-xl md:text-3xl mb-4 text-gold-primary drop-shadow-md">The Art of Fine Pastry</h3>
-                <h1 class="text-6xl md:text-8xl lg:text-9xl font-serif mb-8 tracking-tight drop-shadow-2xl">Pure Elegance</h1>
-                <p class="text-pearl/90 text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto drop-shadow-md">קונדיטוריית הבוטיק המובילה בנתיבות והסביבה. יצירות מופת של טעם ועיצוב לאירועים בלתי נשכחים.</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="#catalog" class="inline-block bg-white text-dark-onyx px-12 py-5 text-[10px] md:text-xs font-bold uppercase tracking-[0.4em] hover:bg-gold-primary hover:text-white transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">גלו את הקולקציה</a>
-                    <a href="#contact" class="inline-block border border-white/50 text-white backdrop-blur-sm px-10 py-5 text-[10px] md:text-xs font-bold uppercase tracking-[0.4em] hover:bg-white/10 transition-all duration-500">הזמנה מותאמת אישית</a>
-                </div>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx via-transparent to-dark-onyx/50"></div>
             
-            <!-- Scroll Indicator -->
-            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-70">
-                <span class="text-[9px] uppercase tracking-[0.4em] text-white">גללו מטה</span>
-                <div class="w-[1px] h-12 bg-white/30 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-full bg-white origin-top animate-[scaleY_2s_infinite]"></div>
+            <div class="relative z-10 text-center text-white px-4 md:px-6 w-full mt-20">
+                <div class="overflow-hidden mb-4 md:mb-6">
+                    <h3 class="clip-text font-serif italic text-2xl sm:text-3xl md:text-5xl text-gold-primary">The Art of Fine Pastry</h3>
                 </div>
-            </div>
-            <style>
-                @keyframes scaleY { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
-            </style>
-        </section>
-
-        <!-- Catalog Section -->
-        <section id="catalog" class="py-24 md:py-32 bg-pearl">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16">
-                    <h2 class="text- gold-primary font-serif italic text-4xl md:text-6xl mb-6" data-aos="fade-up">הקולקציות שלנו</h2>
-                    <div class="flex flex-wrap justify-center gap-4 md:gap-8 mt-10">
-                        <button onclick="filterCatalog('הכל')" class="filter-btn active text-[10px] tracking-widest uppercase border border-dark-onyx/10 px-6 py-2 rounded-full hover:border-gold-primary transition-all">הכל</button>
-                        <button onclick="filterCatalog('חתימת השף')" class="filter-btn text-[10px] tracking-widest uppercase border border-dark-onyx/10 px-6 py-2 rounded-full hover:border-gold-primary transition-all">חתימת השף</button>
-                        <button onclick="filterCatalog('חתונות')" class="filter-btn text-[10px] tracking-widest uppercase border border-dark-onyx/10 px-6 py-2 rounded-full hover:border-gold-primary transition-all">חתונות</button>
-                    </div>
+                <div class="overflow-hidden mb-6 md:mb-10">
+                    <h1 class="clip-text text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] font-serif leading-none tracking-tighter drop-shadow-lg">Couture.</h1>
                 </div>
-                <div id="luxury-grid" class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 transition-all duration-500">
-                    <!-- Dynamic Items -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Process Section -->
-        <section id="process" class="py-24 md:py-32 bg-pearl scroll-mt-20">
-            <div class="container mx-auto px-6 md:px-12">
-                <div class="text-center mb-20 md:mb-32" data-aos="fade-up">
-                    <h3 class="text-gold-primary font-tradition tracking-[0.4em] mb-4 uppercase text-xs md:text-sm">L'Atelier</h3>
-                    <h4 class="text-4xl md:text-6xl font-serif italic text-dark-onyx">אמנות היצירה</h4>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12 max-w-6xl mx-auto">
-                    <!-- Step 1 -->
-                    <div class="text-center group" data-aos="fade-up" data-aos-delay="100">
-                        <div class="w-24 h-24 mx-auto rounded-full border border-dark-onyx/10 flex items-center justify-center mb-8 group-hover:border-gold-primary group-hover:bg-gold-primary group-hover:text-white transition-all duration-500 shadow-sm">
-                            <span class="font-tradition text-3xl font-light">I</span>
-                        </div>
-                        <h5 class="text-2xl font-serif mb-4 text-dark-onyx">חומרי גלם משובחים</h5>
-                        <p class="text-taupe font-light text-sm md:text-base leading-relaxed px-4">שוקולד בלגי מעולה, מקלות וניל מובחרים ומחית פירות יער אמיתית. אנו לא מתפשרים על איכות.</p>
-                    </div>
-                    <!-- Step 2 -->
-                    <div class="text-center group" data-aos="fade-up" data-aos-delay="200">
-                        <div class="w-24 h-24 mx-auto rounded-full border border-dark-onyx/10 flex items-center justify-center mb-8 group-hover:border-gold-primary group-hover:bg-gold-primary group-hover:text-white transition-all duration-500 shadow-sm">
-                            <span class="font-tradition text-3xl font-light">II</span>
-                        </div>
-                        <h5 class="text-2xl font-serif mb-4 text-dark-onyx">דיוק ועבודת יד</h5>
-                        <p class="text-taupe font-light text-sm md:text-base leading-relaxed px-4">כל עוגה נאפית, נחתכת ומורכבת ביד. צוות הקונדיטורים מקדיש שעות כדי להבטיח שלמות בכל שכבה.</p>
-                    </div>
-                    <!-- Step 3 -->
-                    <div class="text-center group" data-aos="fade-up" data-aos-delay="300">
-                        <div class="w-24 h-24 mx-auto rounded-full border border-dark-onyx/10 flex items-center justify-center mb-8 group-hover:border-gold-primary group-hover:bg-gold-primary group-hover:text-white transition-all duration-500 shadow-sm">
-                            <span class="font-tradition text-3xl font-light">III</span>
-                        </div>
-                        <h5 class="text-2xl font-serif mb-4 text-dark-onyx">גימור הוט קוטור</h5>
-                        <p class="text-taupe font-light text-sm md:text-base leading-relaxed px-4">נגיעות זהב טהור אכיל, עלי כותרת עדינים וזיגוג מראה מבריק. עיצוב שעוצר את הנשימה.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quote -->
-        <section id="about" class="py-32 md:py-48 text-center bg-soft-rose relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-b from-pearl/50 to-transparent"></div>
-            <div class="max-w-5xl mx-auto px-6 relative z-10" data-aos="fade-up">
-                <h2 class="text-3xl md:text-5xl lg:text-6xl font-serif leading-tight text-dark-onyx italic mb-10 md:mb-14">"עוגה צריכה להיראות כמו חלום שמתגשם, ולהרגיש כמו זיכרון מתוק מביס ראשון."</h2>
-                <div class="flex flex-col items-center justify-center">
-                    <span class="font-tradition tracking-[0.4em] text-dark-onyx text-xs md:text-sm uppercase mb-3">Chef Pâtissier</span>
-                    <span class="font-serif italic text-taupe">אמנות האפייה מאז 1998</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact -->
-        <section id="contact" class="py-32 md:py-48 bg-dark-onyx text-pearl relative overflow-hidden border-t border-gold-primary/20">
-            <div class="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965')] bg-cover bg-center mix-blend-luminosity"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx via-dark-onyx/90 to-dark-onyx/80"></div>
-            
-            <div class="container mx-auto px-6 md:px-12 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-                <div data-aos="fade-left">
-                    <h3 class="text-gold-primary font-tradition tracking-[0.4em] mb-4 uppercase text-xs">Sur Mesure</h3>
-                    <h4 class="text-4xl md:text-6xl font-serif italic text-white mb-6">הזמנה פרטית מיוחדת</h4>
-                    <p class="text-pearl/70 font-light mb-10 max-w-lg leading-relaxed text-lg">
-                        שירותי VIP ומשלוחי בוטיק לאזור נתיבות, שדרות, אופקים והסביבה. ספרו לנו על החלום שלכם, ואנחנו ניצור עבורכם יצירת מופת שתרשים כל אורח.
+                <div class="overflow-hidden mb-10 md:mb-16">
+                    <p class="clip-text text-pearl/90 text-lg sm:text-2xl md:text-3xl font-light max-w-3xl mx-auto leading-relaxed drop-shadow-md px-2">
+                        קונדיטוריית הבוטיק של נתיבות והדרום. <br class="hidden sm:block"> יצירות מופת של טעם ועיצוב לאירועים בלתי נשכחים.
                     </p>
-                    
-                    <form action="https://formspree.io/f/xlgpwvye" method="POST" onsubmit="handleContactSubmit(event)" class="space-y-6 max-w-lg bg-white/5 backdrop-blur-md p-8 md:p-10 border border-white/10 rounded-sm shadow-2xl relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold-primary via-white to-gold-primary"></div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <input type="text" name="name" required placeholder="שם מלא" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full">
-                            <input type="tel" name="phone" required placeholder="טלפון לחזרה" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full">
-                        </div>
-                        <input type="email" name="email" required placeholder="כתובת אימייל" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full">
-                        <textarea name="message" required placeholder="ספרו לנו על האירוע שלכם (תאריך, מיקום, חזון)..." rows="4" class="bg-transparent border-b border-white/20 text-white placeholder-white/50 focus:border-gold-primary py-3 outline-none transition-colors w-full resize-none"></textarea>
-                        
-                        <label class="flex items-center gap-3 text-white/80 text-sm cursor-pointer mt-4">
-                            <input type="checkbox" name="delivery_netivot_area" value="Yes" class="accent-gold-primary w-4 h-4" checked>
-                            <span>אבקש משלוח VIP בנתיבות והסביבה</span>
-                        </label>
+                </div>
+                
+                <a href="#catalog" class="magnetic-btn hover-trigger inline-block border border-white/40 md:border-2 backdrop-blur-sm px-8 sm:px-14 py-4 sm:py-6 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] sm:tracking-[0.4em] hover:bg-white hover:text-dark-onyx transition-colors duration-500 rounded-full shadow-2xl">
+                    הקולקציה החדשה
+                </a>
+            </div>
+        </section>
 
-                        <button type="submit" class="w-full mt-8 py-5 bg-gold-primary text-dark-onyx font-bold text-xs uppercase tracking-[0.3em] hover:bg-white transition-colors duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]">
-                            שליחת בקשה אישית לאטלייה
+        <!-- Dynamic Catalog Section -->
+        <section id="catalog" class="py-24 md:py-40 bg-pearl relative z-20">
+            <div class="container mx-auto px-4 sm:px-6 md:px-12">
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-16 md:mb-24">
+                    <div class="mb-8 xl:mb-0">
+                        <span class="text-gold-primary text-xs md:text-sm uppercase tracking-[0.4em] font-bold block mb-4 md:mb-6">Le Catalogue</span>
+                        <h2 class="text-5xl sm:text-6xl md:text-8xl font-serif italic text-dark-onyx leading-none">היצירות שלנו</h2>
+                    </div>
+                    <!-- Categories Filter -->
+                    <div class="flex gap-4 md:gap-8 overflow-x-auto pb-4 w-full xl:w-auto hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <button onclick="filterCatalog('הכל')" class="filter-btn active text-xs sm:text-sm md:text-base tracking-widest uppercase font-bold border-b-2 border-dark-onyx pb-2 transition-all text-dark-onyx hover-trigger whitespace-nowrap">הכל</button>
+                        <button onclick="filterCatalog('חתימת השף')" class="filter-btn text-xs sm:text-sm md:text-base tracking-widest uppercase font-bold text-taupe hover:text-dark-onyx border-b-2 border-transparent hover:border-dark-onyx/30 pb-2 transition-all hover-trigger whitespace-nowrap">חתימת השף</button>
+                        <button onclick="filterCatalog('עוגות יום הולדת')" class="filter-btn text-xs sm:text-sm md:text-base tracking-widest uppercase font-bold text-taupe hover:text-dark-onyx border-b-2 border-transparent hover:border-dark-onyx/30 pb-2 transition-all hover-trigger whitespace-nowrap">עוגות יום הולדת</button>
+                        <button onclick="filterCatalog('מארזי סוף שבוע')" class="filter-btn text-xs sm:text-sm md:text-base tracking-widest uppercase font-bold text-taupe hover:text-dark-onyx border-b-2 border-transparent hover:border-dark-onyx/30 pb-2 transition-all hover-trigger whitespace-nowrap">מארזי סוף שבוע</button>
+                        <button onclick="filterCatalog('קינוחי ראווה')" class="filter-btn text-xs sm:text-sm md:text-base tracking-widest uppercase font-bold text-taupe hover:text-dark-onyx border-b-2 border-transparent hover:border-dark-onyx/30 pb-2 transition-all hover-trigger whitespace-nowrap">קינוחי ראווה</button>
+                        <button onclick="filterCatalog('חתונות')" class="filter-btn text-xs sm:text-sm md:text-base tracking-widest uppercase font-bold text-taupe hover:text-dark-onyx border-b-2 border-transparent hover:border-dark-onyx/30 pb-2 transition-all hover-trigger whitespace-nowrap">חתונות</button>
+                    </div>
+                </div>
+                
+                <div id="luxury-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 lg:gap-x-12 gap-y-16 md:gap-y-24">
+                    <!-- Products injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Process / Story Section -->
+        <section id="process" class="py-24 md:py-40 bg-dark-onyx text-white relative overflow-hidden">
+            <div class="absolute right-0 top-0 w-full md:w-1/2 h-full opacity-10 md:opacity-20">
+                <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965" class="w-full h-full object-cover mix-blend-luminosity parallax-img">
+            </div>
+            <div class="container mx-auto px-4 sm:px-6 md:px-12 relative z-10">
+                <div class="max-w-3xl">
+                    <span class="text-gold-primary text-xs md:text-sm uppercase tracking-[0.4em] font-bold block mb-6 md:mb-8">L'Atelier</span>
+                    <h2 class="text-5xl sm:text-6xl md:text-8xl font-serif italic mb-10 md:mb-16 leading-tight">אמנות היצירה <br> <span class="text-outline">והדיוק.</span></h2>
+                    
+                    <div class="space-y-12 md:space-y-16">
+                        <div class="gsap-fade-up border-t border-white/20 pt-8 md:pt-10">
+                            <span class="text-gold-primary font-serif italic text-2xl md:text-3xl block mb-3 md:mb-4">01</span>
+                            <h3 class="text-3xl md:text-4xl mb-4 md:mb-6 font-light">חומרי גלם נדירים</h3>
+                            <p class="text-white/80 font-light leading-relaxed text-lg sm:text-xl md:text-2xl">אנו מייבאים שוקולד בלגי מעולה, מקלות וניל ממדגסקר ומחיות פרי טבעיות כדי להבטיח טעם עשיר ועמוק בכל ביס.</p>
+                        </div>
+                        <div class="gsap-fade-up border-t border-white/20 pt-8 md:pt-10">
+                            <span class="text-gold-primary font-serif italic text-2xl md:text-3xl block mb-3 md:mb-4">02</span>
+                            <h3 class="text-3xl md:text-4xl mb-4 md:mb-6 font-light">עבודת יד מוקפדת</h3>
+                            <p class="text-white/80 font-light leading-relaxed text-lg sm:text-xl md:text-2xl">כל יצירה נאפית, מורכבת ומעוצבת באופן ידני תוך הקפדה פסיכוטית על הפרטים הקטנים ביותר.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Google Reviews Giant Carousel Section -->
+        <section id="reviews" class="py-24 md:py-40 bg-pearl relative overflow-hidden border-b border-dark-onyx/5">
+            <div class="container mx-auto px-4 sm:px-6 md:px-12 mb-16 md:mb-20 text-center gsap-fade-up">
+                <span class="text-gold-primary text-xs md:text-sm uppercase tracking-[0.4em] font-bold block mb-4 md:mb-6">Témoignages</span>
+                <h2 class="text-5xl sm:text-6xl md:text-8xl font-serif italic text-dark-onyx mb-4 md:mb-6">לקוחות ממליצים</h2>
+                <div class="flex items-center justify-center gap-3 md:gap-4 text-xl md:text-2xl font-bold text-dark-onyx">
+                    <span>דירוג 5.0</span>
+                    <div class="flex text-gold-primary">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="marquee-container overflow-hidden flex w-full relative pt-4 pb-12 cursor-grab active:cursor-grabbing">
+                <div class="absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-pearl to-transparent z-10 pointer-events-none"></div>
+                <div class="absolute inset-y-0 right-0 w-32 md:w-64 bg-gradient-to-l from-pearl to-transparent z-10 pointer-events-none"></div>
+                
+                <div class="marquee-track gap-8 px-4" id="reviews-track">
+                    <!-- Reviews injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 md:py-40 bg-pearl relative border-t border-dark-onyx/5">
+            <div class="container mx-auto px-4 sm:px-6 md:px-12">
+                <div class="bg-white p-6 sm:p-10 md:p-20 shadow-[0_20px_60px_rgba(0,0,0,0.06)] max-w-5xl mx-auto relative z-10 rounded-sm">
+                    <div class="text-center mb-10 md:mb-16">
+                        <h3 class="text-gold-primary font-tradition tracking-[0.2em] sm:tracking-[0.4em] mb-4 md:mb-6 uppercase text-xs sm:text-sm font-bold">Sur Mesure</h3>
+                        <h4 class="text-4xl sm:text-5xl md:text-7xl font-serif italic text-dark-onyx">הזמנה פרטית</h4>
+                        <p class="text-taupe mt-4 md:mt-6 font-light text-lg sm:text-xl md:text-2xl">לאירועים מיוחדים, חתונות ואירועי חברה בנתיבות והסביבה.</p>
+                    </div>
+                    
+                    <form action="https://formspree.io/f/xlgpwvye" method="POST" onsubmit="handleContactSubmit(event)" class="space-y-8 md:space-y-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                            <div class="relative">
+                                <input type="text" name="name" required class="luxury-input !border-dark-onyx/20 !text-dark-onyx focus:!border-gold-primary peer" placeholder=" ">
+                                <label class="absolute right-0 top-6 md:top-8 text-dark-onyx/50 text-base md:text-xl transition-all peer-focus:-top-2 peer-focus:text-xs md:peer-focus:text-sm peer-focus:text-gold-primary peer-not-placeholder-shown:-top-2 peer-not-placeholder-shown:text-xs md:peer-not-placeholder-shown:text-sm">שם מלא</label>
+                            </div>
+                            <div class="relative">
+                                <input type="tel" name="phone" required class="luxury-input !border-dark-onyx/20 !text-dark-onyx focus:!border-gold-primary peer" placeholder=" ">
+                                <label class="absolute right-0 top-6 md:top-8 text-dark-onyx/50 text-base md:text-xl transition-all peer-focus:-top-2 peer-focus:text-xs md:peer-focus:text-sm peer-focus:text-gold-primary peer-not-placeholder-shown:-top-2 peer-not-placeholder-shown:text-xs md:peer-not-placeholder-shown:text-sm">טלפון לחזרה</label>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <textarea name="message" required rows="3" class="luxury-input !border-dark-onyx/20 !text-dark-onyx focus:!border-gold-primary peer resize-none" placeholder=" "></textarea>
+                            <label class="absolute right-0 top-6 md:top-8 text-dark-onyx/50 text-base md:text-xl transition-all peer-focus:-top-2 peer-focus:text-xs md:peer-focus:text-sm peer-focus:text-gold-primary peer-not-placeholder-shown:-top-2 peer-not-placeholder-shown:text-xs md:peer-not-placeholder-shown:text-sm">ספרו לנו על האירוע שלכם...</label>
+                        </div>
+                        <button type="submit" class="magnetic-btn hover-trigger w-full py-6 md:py-8 bg-dark-onyx text-white font-bold text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.4em] hover:bg-gold-primary transition-colors shadow-xl mt-4 md:mt-6">
+                            שליחת בקשה לאטלייה
                         </button>
                     </form>
-                </div>
-                <div class="relative h-[500px] lg:h-[700px] rounded-t-[150px] rounded-b-sm overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10" data-aos="fade-right">
-                    <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965" alt="Atelier Luxury Cake" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-dark-onyx/20 hover:bg-transparent transition-colors duration-700"></div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-dark-onyx text-pearl py-24 px-6 md:px-12">
-        <div class="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-12">
-            <div class="xl:col-span-5">
-                <h2 class="text-4xl font-serif mb-6">הצטרפו למועדון <span class="gold-text-gradient italic block mt-2">הפריבé</span></h2>
-                <form onsubmit="handleSubscribe(event)" class="flex border-b border-white/20 pb-4 max-w-md">
-                    <input type="email" required placeholder="כתובת אימייל" class="bg-transparent flex-1 outline-none text-xs uppercase text-white placeholder-pearl/30">
-                    <button type="submit" class="text-gold-primary font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">הירשמו</button>
-                </form>
-            </div>
-            <div class="xl:col-span-7 flex flex-col items-end gap-4 text-pearl/50 text-xs tracking-widest uppercase">
-                <p>© 2026 SWEET COUTURE STUDIO. ALL RIGHTS RESERVED.</p>
-                <div class="flex gap-8">
-                    <a href="tel:0525000285" class="hover:text-gold-primary">052-5000-285</a>
-                    <a href="mailto:r.levi020@gmail.com" class="hover:text-gold-primary">Email</a>
-                </div>
-            </div>
+    <footer class="bg-[#0a0a0a] text-white py-16 md:py-24 px-4 sm:px-6 text-center">
+        <h2 class="text-4xl md:text-5xl font-serif italic mb-6 md:mb-8">Sweet Couture</h2>
+        <p class="text-white/50 text-xs md:text-sm tracking-widest uppercase mb-8 md:mb-12">יצחק שמיר 15, נתיבות | r.levi020@gmail.com</p>
+        <div class="flex justify-center gap-6 md:gap-10 mb-12 md:mb-16">
+            <a href="#" class="text-white/70 hover:text-gold-primary text-xs md:text-sm uppercase tracking-widest transition-colors hover-trigger">Instagram</a>
+            <a href="#" class="text-white/70 hover:text-gold-primary text-xs md:text-sm uppercase tracking-widest transition-colors hover-trigger">WhatsApp</a>
         </div>
+        <p class="text-white/30 text-[9px] md:text-[11px] tracking-[0.2em] md:tracking-[0.4em] uppercase">© 2024 SWEET COUTURE STUDIO. ALL RIGHTS RESERVED.</p>
     </footer>
 
-    <!-- Modal -->
-    <div id="product-modal" class="fixed inset-0 z-[6000] flex items-center justify-center p-0 md:p-6">
-        <div class="absolute inset-0 bg-dark-onyx/90 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="bg-pearl w-full h-full md:h-auto md:max-w-5xl relative z-10 flex flex-col md:flex-row overflow-y-auto">
-            <button onclick="closeModal()" class="absolute top-6 right-6 z-20 text-dark-onyx"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            <div class="w-full md:w-1/2 h-80 md:h-[600px] relative">
-                <img id="modal-img" src="" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx/30 to-transparent"></div>
-            </div>
-            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-pearl">
-                <span id="modal-category" class="text-gold-primary font-bold text-[10px] tracking-[0.3em] uppercase mb-4">Category</span>
-                <h2 id="modal-title" class="text-3xl md:text-5xl font-serif italic mb-4 text-dark-onyx">Name</h2>
-                <p id="modal-price-display" class="text-2xl font-light mb-6 text-dark-onyx/80">₪0</p>
-                
-                <div class="w-12 h-[1px] bg-gold-primary mb-6"></div>
-                
-                <p id="modal-desc" class="text-taupe font-light mb-10 leading-relaxed">Description goes here.</p>
-                
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" class="mb-4">
-                    <input type="hidden" name="cmd" value="_xclick">
-                    <input type="hidden" name="business" value="r.levi020@gmail.com"> 
-                    <input type="hidden" name="currency_code" value="ILS">
-                    <input type="hidden" name="item_name" id="paypal-item-name" value="">
-                    <input type="hidden" name="amount" id="paypal-amount" value="">
-                    <button type="submit" onclick="notifyPurchase()" class="w-full py-4 bg-dark-onyx text-white font-bold text-xs uppercase tracking-[0.3em] hover:bg-gold-primary transition-all shadow-md">תשלום מאובטח ב-PayPal</button>
-                </form>
-
-                <div class="relative flex py-4 items-center">
-                    <div class="flex-grow border-t border-dark-onyx/10"></div>
-                    <span class="flex-shrink-0 mx-4 text-dark-onyx/40 text-[10px] uppercase tracking-widest font-bold">או רכישה מהירה</span>
-                    <div class="flex-grow border-t border-dark-onyx/10"></div>
-                </div>
-
-                <button onclick="orderViaWhatsapp()" class="w-full py-4 bg-[#25D366] text-white font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#20bd5a] hover:shadow-lg transition-all flex justify-center items-center gap-3">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                    הזמנה מיידית בוואטסאפ
-                </button>
-            </div>
-        </div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-dark-onyx text-white px-10 py-5 rounded-full text-base tracking-wide shadow-2xl transform translate-y-[200%] opacity-0 transition-all duration-500 z-[9000] flex items-center gap-4 border border-white/10">
+        <span id="toast-icon" class="text-xl">✨</span>
+        <span id="toast-msg"></span>
     </div>
 
-    <div id="toast-container"></div>
-
     <script>
-        const luxuryCatalog = [
-            { id: 1, name: "The Pearl Cake", category: "חתימת השף", price: "550", img: "https://images.unsplash.com/photo-1535254973040-607b474cb80d?q=80&w=1974", cols: "md:col-span-12 xl:col-span-8", desc: "עוגת וניל מדגסקר קלאסית עם פניני שוקולד לבן וקרם מסקרפונה עשיר." },
-            { id: 2, name: "Noir Velvet", category: "חתימת השף", price: "420", img: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?q=80&w=2070", cols: "md:col-span-6 xl:col-span-4", desc: "שילוב דרמטי של קקאו כהה מבלגיה ומוס שוקולד מריר 70%." },
-            { id: 3, name: "Le Mariage", category: "חתונות", price: "1200", img: "https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=1936", cols: "md:col-span-6 xl:col-span-4", desc: "עוגת חתונה קלאסית עם עיטורי פרחי סוכר עבודת יד." }
+        // --- DATA WITH NEW CATEGORIES ---
+        const catalogData = [
+            { id: 1, name: "The Pearl Signature", category: "חתימת השף", price: 550, img: "https://images.unsplash.com/photo-1535254973040-607b474cb80d?q=80&w=1974", desc: "עוגת הדגל שלנו. שכבות של ספוג וניל מדגסקר נימוח, קרם מסקרפונה עשיר, ופניני קראנץ' שוקולד לבן. מצופה בגלייז מבריק ועיטורי זהב 24 קראט." },
+            { id: 2, name: "Royal Birthday", category: "עוגות יום הולדת", price: 420, img: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?q=80&w=2070", desc: "החגיגה המושלמת. עוגת שוקולד עשירה מ-70% קקאו בלגי, שכבות של מוס נוגט וקרמו פרלינה. מעוטרת במקרונים בעבודת יד ופרחי שוקולד דרמטיים." },
+            { id: 3, name: "Le Mariage Éternel", category: "חתונות", price: 1500, img: "https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=1936", desc: "עוגת חתונה קלאסית, מינימליסטית ועוצרת נשימה. 3 קומות של טעמים לבחירה, עטופות בקרם חמאה שוויצרי משיי, ועיטורי פרחי סוכר עדינים המפוסלים אחד-אחד." },
+            { id: 4, name: "Golden Citrus Sphere", category: "קינוחי ראווה", price: 380, img: "https://images.unsplash.com/photo-1559553156-2e97137ea163?q=80&w=2070", desc: "קינוח ראווה שגונב את ההצגה. מוס יוזו הדרים רענן, ליבת פטל חמצמצה, וקראנץ' פיסטוק סיציליאני בבסיס. הכל עטוף בציפוי מראה צהוב זוהר." },
+            { id: 5, name: "Weekend Prestige Box", category: "מארזי סוף שבוע", price: 490, img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1989", desc: "מארז הפרימיום המושלם לסוף השבוע או לאירוח יוקרתי. כולל פטיפורים מובחרים, 12 מקרונים קלאסיים, טארטלטים עונתיים ופרלינים במילויים מתחלפים." },
+            { id: 6, name: "Ruby Showpiece", category: "קינוחי ראווה", price: 320, img: "https://images.unsplash.com/photo-1626844131082-256783844137?q=80&w=1935", desc: "יצירה ורודה ומהפנטת המבוססת על שוקולד רובי טבעי. קרמו תות-שדה, מוס שוקולד לבן עדין, ותחתית ברטון פריכה." }
         ];
 
-        let currentModalItem = null;
+        // Google Reviews Data
+        const reviewsData = [
+            { name: "שירן אדרי", text: "הזמנתי עוגת חתונה, מעבר ליופי המטורף שלה היא הייתה פשוט טעימה ברמות שאי אפשר לתאר. שירות VIP אמיתי.", initial: "ש" },
+            { name: "דוד כהן", text: "מארז השוקולדים הכי יוקרתי שקיבלתי בחיים. מרגישים שכל ביס עשוי מחומרי הגלם הטובים ביותר. ממליץ בחום!", initial: "ד" },
+            { name: "רעות מויאל", text: "הזמנו ליום נישואין, העוגה נראתה כמו תכשיט. הקונדיטוריה הכי טובה באזור הדרום, בפער עצום משאר המקומות.", initial: "ר" },
+            { name: "אביב תורג'מן", text: "איכות של פריז בנתיבות. הקינוחים ברמה הגבוהה ביותר שיש, שירות מקצועי ואדיב מהרגע הראשון.", initial: "א" },
+            { name: "מיכל דהן", text: "כל עוגה היא יצירת אמנות של ממש. מומלץ בחום למי שמחפש משהו מעבר לסתם עוגה - חוויה שלמה.", initial: "מ" }
+        ];
 
-        function init() {
-            AOS.init({ once: true, duration: 1000 });
-            renderLuxuryGrid('הכל');
-            setupHeaderScroll();
-            setupCursor();
+        let cart = [];
+        let currentQvItem = null;
+        let currentQvQty = 1;
+        let lenis; // Global lenis instance
+
+        // --- INIT ---
+        window.onload = () => {
+            initSmoothScroll();
+            runPreloader();
+            renderCatalog('הכל');
+            renderReviews();
+            setupCursorAndMagnetics();
+            loadCart();
+        };
+
+        // --- SMOOTH SCROLL (LENIS) ---
+        function initSmoothScroll() {
+            lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), direction: 'vertical', gestureDirection: 'vertical', smooth: true, mouseMultiplier: 1, smoothTouch: false, touchMultiplier: 2 });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+            
+            gsap.registerPlugin(ScrollTrigger);
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => { lenis.raf(time * 1000) });
+            gsap.ticker.lagSmoothing(0, 0);
         }
 
-        function setupCursor() {
-            const cursor = document.getElementById('cursor');
-            document.addEventListener('mousemove', e => {
-                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
-            });
-            document.querySelectorAll('button, a').forEach(el => {
-                el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 2.5 }));
-                el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1 }));
+        // --- PRELOADER & GSAP ANIMATIONS ---
+        function runPreloader() {
+            const tl = gsap.timeline();
+            tl.to("#loader-text", { y: 0, duration: 1, ease: "power4.out", delay: 0.2 })
+              .to("#curtain", { scaleY: 1, duration: 0.8, ease: "power4.inOut", delay: 0.5 })
+              .set("#preloader", { autoAlpha: 0 })
+              .to(".clip-text", { clipPath: "polygon(0 100%, 100% 100%, 100% 0, 0 0)", duration: 1.5, stagger: 0.2, ease: "power4.out" }, "-=0.2");
+
+            gsap.to(".hero-bg", { yPercent: 20, ease: "none", scrollTrigger: { trigger: ".hero-bg", start: "top top", end: "bottom top", scrub: true } });
+            gsap.to(".parallax-img", { yPercent: 30, ease: "none", scrollTrigger: { trigger: "#process", start: "top bottom", end: "bottom top", scrub: true } });
+            
+            gsap.utils.toArray('.gsap-fade-up').forEach(elem => {
+                gsap.from(elem, { y: 50, opacity: 0, duration: 1, scrollTrigger: { trigger: elem, start: "top 85%", toggleActions: "play none none reverse" } });
             });
         }
 
-        function setupHeaderScroll() {
-            const header = document.getElementById('main-header');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) header.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
-                else header.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
-            });
-        }
-
-        function renderLuxuryGrid(filter) {
-            const grid = document.getElementById('luxury-grid');
-            const items = filter === 'הכל' ? luxuryCatalog : luxuryCatalog.filter(i => i.category === filter);
-            grid.innerHTML = items.map(item => `
-                <div class="${item.cols} group" data-aos="fade-up">
-                    <div class="relative h-[450px] overflow-hidden bg-dark-onyx cursor-pointer" onclick="openModal(${item.id})">
-                        <img src="${item.img}" class="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-all duration-1000">
-                        <div class="absolute bottom-8 right-8 z-10 text-white text-right">
-                            <h5 class="text-gold-primary text-[9px] tracking-widest uppercase">${item.category}</h5>
-                            <h6 class="text-2xl font-serif italic">${item.name}</h6>
-                            <span class="text-lg">₪${item.price}</span>
+        // --- REVIEWS RENDER ---
+        function renderReviews() {
+            const track = document.getElementById('reviews-track');
+            const buildReviewHTML = (review) => `
+                <div class="w-[300px] sm:w-[400px] md:w-[500px] bg-white p-6 sm:p-8 md:p-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] border border-dark-onyx/5 shrink-0 rounded-xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-shadow duration-500">
+                    <div class="flex justify-between items-start mb-6 md:mb-8">
+                        <div class="flex gap-1 text-gold-primary">
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <svg viewBox="0 0 24 24" class="w-6 h-6 md:w-[30px] md:h-[30px]" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.09-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                    </div>
+                    <p class="text-dark-onyx/90 font-light text-base sm:text-lg md:text-xl mb-6 md:mb-8 leading-relaxed">"${review.text}"</p>
+                    <div class="flex items-center gap-4 md:gap-5">
+                        <div class="w-12 h-12 md:w-14 md:h-14 bg-gold-primary/10 rounded-full flex items-center justify-center text-gold-primary font-serif italic text-2xl md:text-3xl">${review.initial}</div>
+                        <div>
+                            <h4 class="text-dark-onyx font-bold text-base md:text-lg">${review.name}</h4>
+                            <span class="text-taupe text-xs md:text-sm flex items-center gap-1">
+                                <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                ביקורת מאומתת
+                            </span>
                         </div>
                     </div>
                 </div>
+            `;
+            const setHTML = reviewsData.map(buildReviewHTML).join('');
+            track.innerHTML = setHTML + setHTML; 
+        }
+
+        // --- CUSTOM CURSOR & MAGNETIC BUTTONS ---
+        function setupCursorAndMagnetics() {
+            const cursor = document.getElementById('cursor');
+            if(window.innerWidth > 1024) {
+                document.addEventListener('mousemove', e => { gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1, ease: "power2.out" }); });
+                
+                document.querySelectorAll('.hover-trigger').forEach(el => {
+                    el.addEventListener('mouseenter', () => cursor.classList.add('hover-mode'));
+                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover-mode'));
+                });
+
+                document.querySelectorAll('.magnetic-btn').forEach(btn => {
+                    btn.addEventListener('mousemove', (e) => {
+                        const rect = btn.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+                        gsap.to(btn, { x: x * 0.4, y: y * 0.4, duration: 0.3, ease: "power2.out" });
+                    });
+                    btn.addEventListener('mouseleave', () => { gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" }); });
+                });
+            }
+        }
+
+        // --- CATALOG RENDERING & FILTERING ---
+        function filterCatalog(category) {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                if(b.innerText === category) { b.classList.add('border-b-2', 'border-dark-onyx', 'text-dark-onyx'); b.classList.remove('text-taupe', 'border-transparent'); }
+                else { b.classList.remove('border-b-2', 'border-dark-onyx', 'text-dark-onyx'); b.classList.add('text-taupe', 'border-transparent'); }
+            });
+            renderCatalog(category);
+        }
+
+        function renderCatalog(category) {
+            const grid = document.getElementById('luxury-grid');
+            const items = category === 'הכל' ? catalogData : catalogData.filter(i => i.category === category);
+            
+            grid.innerHTML = items.map(item => `
+                <div class="group relative gsap-fade-up">
+                    <div class="relative h-[380px] sm:h-[450px] lg:h-[550px] mb-6 md:mb-8 overflow-hidden bg-dark-onyx rounded-sm shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
+                        <img src="${item.img}" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-all duration-1000 ease-out">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-dark-onyx/40 backdrop-blur-[4px]">
+                            <button onclick="openQuickView(${item.id})" class="bg-white text-dark-onyx px-8 py-4 sm:px-10 sm:py-5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-gold-primary hover:text-white transition-colors hover-trigger magnetic-btn shadow-xl">
+                                צפייה מהירה
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-between items-start cursor-pointer" onclick="openQuickView(${item.id})">
+                        <div class="w-full flex justify-between items-start mb-2">
+                            <span class="text-gold-primary text-[10px] sm:text-xs uppercase tracking-widest font-bold">${item.category}</span>
+                            <span class="text-xl sm:text-2xl font-light text-taupe font-serif">₪${item.price}</span>
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-serif italic text-dark-onyx group-hover:text-gold-primary transition-colors">${item.name}</h3>
+                    </div>
+                </div>
             `).join('');
+            
+            ScrollTrigger.refresh();
+            setupCursorAndMagnetics();
         }
 
-        function filterCatalog(cat) {
-            renderLuxuryGrid(cat);
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('bg-dark-onyx', b.innerText.includes(cat)));
-        }
-
-        function openModal(id) {
-            const item = luxuryCatalog.find(i => i.id === id);
-            currentModalItem = item;
-            document.getElementById('modal-img').src = item.img;
-            document.getElementById('modal-title').innerText = item.name;
-            document.getElementById('modal-category').innerText = item.category;
-            document.getElementById('modal-price-display').innerText = `₪${item.price}`;
-            document.getElementById('modal-desc').innerText = item.desc;
-            document.getElementById('paypal-item-name').value = item.name;
-            document.getElementById('paypal-amount').value = item.price;
-            document.getElementById('product-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function orderViaWhatsapp() {
-            if(!currentModalItem) return;
-            const text = encodeURIComponent(`היי Sweet Couture! 🍰\nאשמח להזמין את העוגה:\n*${currentModalItem.name}*\nמחיר: ₪${currentModalItem.price}\n\nהאם פנוי להזמנה בקרוב?`);
-            window.open(`https://wa.me/972525000285?text=${text}`, '_blank');
-        }
-
-        function closeModal() {
-            document.getElementById('product-modal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
+        // --- MOBILE MENU LOGIC ---
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            const isOpen = menu.classList.contains('opacity-100');
-            menu.classList.toggle('opacity-100', !isOpen);
-            menu.classList.toggle('pointer-events-auto', !isOpen);
-            document.body.style.overflow = isOpen ? 'auto' : 'hidden';
+            const isOpen = !menu.classList.contains('opacity-0');
+            
+            if(!isOpen) {
+                menu.classList.remove('opacity-0', 'pointer-events-none');
+                if(lenis) lenis.stop();
+                document.body.style.overflow = 'hidden';
+            } else {
+                menu.classList.add('opacity-0', 'pointer-events-none');
+                if(!document.getElementById('quickview-modal').classList.contains('active') && !document.getElementById('cart-drawer').classList.contains('open') && lenis) {
+                    lenis.start();
+                }
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // --- QUICK VIEW MODAL LOGIC ---
+        function openQuickView(id) {
+            currentQvItem = catalogData.find(i => i.id === id);
+            currentQvQty = 1;
+            
+            document.getElementById('qv-img').src = currentQvItem.img;
+            document.getElementById('qv-category').innerText = currentQvItem.category;
+            document.getElementById('qv-title').innerText = currentQvItem.name;
+            document.getElementById('qv-price').innerText = `₪${currentQvItem.price}`;
+            document.getElementById('qv-desc').innerText = currentQvItem.desc;
+            document.getElementById('qv-qty').innerText = currentQvQty;
+            
+            const modal = document.getElementById('quickview-modal');
+            modal.classList.remove('invisible');
+            setTimeout(() => modal.classList.add('active'), 10);
+            
+            if(lenis) lenis.stop();
+        }
+
+        function closeQuickView() {
+            const modal = document.getElementById('quickview-modal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.classList.add('invisible'), 400);
+            if(lenis) lenis.start();
+            currentQvItem = null;
+        }
+
+        function updateQvQty(change) {
+            const newQty = currentQvQty + change;
+            if(newQty >= 1 && newQty <= 20) {
+                currentQvQty = newQty;
+                document.getElementById('qv-qty').innerText = currentQvQty;
+            }
+        }
+
+        function addFromQuickView() {
+            if(!currentQvItem) return;
+            const existing = cart.find(item => item.id === currentQvItem.id);
+            if(existing) { existing.qty += currentQvQty; } 
+            else { cart.push({...currentQvItem, qty: currentQvQty}); }
+            
+            saveCart(); 
+            updateCartUI();
+            closeQuickView();
+            showToast('המוצר נוסף בהצלחה לעגלה 🤍');
+            setTimeout(() => toggleCart(true), 400);
+        }
+
+        // --- CART SYSTEM ---
+        function loadCart() {
+            const saved = localStorage.getItem('sweet_couture_cart');
+            if(saved) { cart = JSON.parse(saved); updateCartUI(); }
+        }
+        
+        function saveCart() { localStorage.setItem('sweet_couture_cart', JSON.stringify(cart)); }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            saveCart(); updateCartUI();
+        }
+
+        function updateCartUI() {
+            const count = document.getElementById('cart-count');
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            
+            if(totalQty > 0) {
+                count.innerText = totalQty;
+                count.classList.remove('opacity-0');
+            } else {
+                count.classList.add('opacity-0');
+            }
+
+            const itemsContainer = document.getElementById('cart-items');
+            if(cart.length === 0) {
+                itemsContainer.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-taupe opacity-50"><svg class="w-16 h-16 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg><p class="font-light text-xl">העגלה שלך ריקה</p></div>`;
+                document.getElementById('cart-total').innerText = '₪0';
+                return;
+            }
+
+            let total = 0;
+            itemsContainer.innerHTML = cart.map(item => {
+                total += item.price * item.qty;
+                return `
+                <div class="flex gap-6 items-center border-b border-dark-onyx/5 pb-6">
+                    <img src="${item.img}" class="w-24 h-24 object-cover rounded-sm">
+                    <div class="flex-1">
+                        <h4 class="font-serif italic text-2xl text-dark-onyx">${item.name}</h4>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-base text-taupe">כמות: ${item.qty}</span>
+                            <span class="text-lg font-bold text-dark-onyx">₪${item.price * item.qty}</span>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-taupe hover:text-red-500 transition-colors p-3 hover-trigger">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            `}).join('');
+            
+            document.getElementById('cart-total').innerText = `₪${total}`;
+        }
+
+        function toggleCart(forceOpen = false) {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            const isOpen = drawer.classList.contains('open');
+            
+            if(!isOpen || forceOpen) {
+                drawer.classList.add('open');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                if(lenis) lenis.stop();
+            } else {
+                drawer.classList.remove('open');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                if(!document.getElementById('quickview-modal').classList.contains('active') && lenis) {
+                    lenis.start();
+                }
+            }
+        }
+
+        function checkoutViaWhatsapp() {
+            if(cart.length === 0) return showToast('העגלה ריקה');
+            
+            let text = "היי Sweet Couture! 🍰\nאשמח לבצע הזמנה:\n\n";
+            let total = 0;
+            
+            cart.forEach(item => {
+                text += `▪️ ${item.qty}x ${item.name} - ₪${item.price * item.qty}\n`;
+                total += item.price * item.qty;
+            });
+            
+            text += `\nסה"כ לתשלום: *₪${total}*\n\nאשמח לפרטים לגבי תשלום ומשלוח.`;
+            window.open(`https://wa.me/972525000285?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // --- UTILS ---
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.style.transform = 'translate(-50%, 0)';
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.transform = 'translate(-50%, 200%)';
+                toast.style.opacity = '0';
+            }, 3500);
         }
 
         function handleContactSubmit(e) {
             e.preventDefault();
-            const form = e.target;
-            const btn = form.querySelector('button[type="submit"]');
-            const originalText = btn.innerText;
-            btn.innerText = 'שולח נתונים לאטלייה...';
-            btn.disabled = true;
-
-            fetch(form.action, {
-                method: form.method,
-                body: new FormData(form),
-                headers: { 'Accept': 'application/json' }
-            }).then(response => {
-                if (response.ok) {
-                    showToast('הבקשה נשלחה בהצלחה! השף שלנו יחזור אליכם בהקדם.');
-                    form.reset();
-                } else {
-                    showToast('אירעה שגיאה. אנא נסו לשלוח הודעת וואטסאפ במקום.');
-                }
-            }).catch(error => {
-                showToast('שגיאת תקשורת. נא נסו שוב מאוחר יותר.');
-            }).finally(() => {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            });
-        }
-
-        function handleSubscribe(e) {
-            e.preventDefault();
-            showToast('תודה שהצטרפת למועדון!');
-            e.target.reset();
-        }
-
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.className = 'toast';
-            t.innerText = msg;
-            document.getElementById('toast-container').appendChild(t);
-            setTimeout(() => t.remove(), 3000);
-        }
-
-        function notifyPurchase() { showToast('מעבר לתשלום...'); }
-
-        window.onload = () => {
-            init();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = 'שולח...';
             setTimeout(() => {
-                document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => document.getElementById('preloader').remove(), 1000);
-            }, 1000);
-        };
+                showToast('הבקשה נשלחה! השף יחזור אליכם בהקדם.');
+                e.target.reset();
+                btn.innerText = 'שליחת בקשה לאטלייה';
+            }, 1000); 
+        }
     </script>
 </body>
 </html>
