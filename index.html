@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweet Couture | קונדיטוריית בוטיק בנתיבות</title>
     
-    <!-- SEO Meta Tags -->
+    <!-- SEO & Performance Meta Tags -->
     <meta name="description" content="Sweet Couture - קונדיטוריית בוטיק בנתיבות. עוגות ראווה, מארזים יוקרתיים וקינוחי הוט קוטור לאירועים מיוחדים וחתונות.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1920&q=80">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -108,6 +112,10 @@
 
         /* FAQ Accordion Styling */
         .faq-answer { overflow: hidden; height: 0; opacity: 0; }
+
+        /* Performance & Hardware Acceleration */
+        .gpu-accel { transform: translateZ(0); will-change: transform, opacity; backface-visibility: hidden; }
+        .smooth-image { image-rendering: high-quality; }
     </style>
 </head>
 <body class="noise-bg">
@@ -256,8 +264,8 @@
     <main>
         <!-- Hero Section with Parallax -->
         <section class="h-screen relative flex items-center justify-center overflow-hidden bg-dark-onyx">
-            <div class="hero-bg absolute inset-0 w-full h-[120%] -top-[10%]">
-                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974" class="w-full h-full object-cover opacity-50" alt="Luxury Cake Background">
+            <div class="hero-bg absolute inset-0 w-full h-[120%] -top-[10%] gpu-accel">
+                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1920&q=80" fetchpriority="high" decoding="async" class="w-full h-full object-cover opacity-50 smooth-image" alt="Luxury Cake Background">
             </div>
             <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx via-transparent to-dark-onyx/50"></div>
             
@@ -266,7 +274,7 @@
                     <h3 class="clip-text font-serif italic text-2xl sm:text-3xl md:text-5xl text-gold-primary text-shadow-premium">The Art of Fine Pastry</h3>
                 </div>
                 <div class="overflow-hidden mb-6 md:mb-10">
-                    <h1 class="clip-text text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] font-serif leading-none tracking-tighter drop-shadow-2xl text-shadow-premium">Couture.</h1>
+                    <h1 class="clip-text text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] font-serif leading-none tracking-tighter drop-shadow-2xl text-shadow-premium">Couture-אתר בבנייה</h1>
                 </div>
                 <div class="overflow-hidden mb-10 md:mb-16">
                     <p class="clip-text text-pearl/90 text-lg sm:text-2xl md:text-3xl font-light max-w-3xl mx-auto leading-relaxed text-shadow-premium px-2">
@@ -307,8 +315,8 @@
 
         <!-- Process / Story Section -->
         <section id="process" class="py-24 md:py-40 bg-dark-onyx text-white relative overflow-hidden">
-            <div class="absolute right-0 top-0 w-full md:w-1/2 h-full opacity-10 md:opacity-20">
-                <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965" class="w-full h-full object-cover mix-blend-luminosity parallax-img" loading="lazy">
+            <div class="absolute right-0 top-0 w-full md:w-1/2 h-full opacity-10 md:opacity-20 gpu-accel">
+                <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=1200&q=75" class="w-full h-full object-cover mix-blend-luminosity parallax-img smooth-image" loading="lazy" decoding="async" alt="Atelier Process">
             </div>
             <div class="container mx-auto px-4 sm:px-6 md:px-12 relative z-10">
                 <div class="max-w-3xl">
@@ -484,14 +492,14 @@
     </div>
 
     <script>
-        // --- DATA WITH CATEGORIES ---
+        // --- DATA WITH CATEGORIES (OPTIMIZED IMAGES) ---
         const catalogData = [
-            { id: 1, name: "The Pearl Signature", category: "חתימת השף", price: 550, img: "https://images.unsplash.com/photo-1535254973040-607b474cb80d?q=80&w=1974", desc: "עוגת הדגל שלנו. שכבות של ספוג וניל מדגסקר נימוח, קרם מסקרפונה עשיר, ופניני קראנץ' שוקולד לבן. מצופה בגלייז מבריק ועיטורי זהב 24 קראט." },
-            { id: 2, name: "Royal Birthday", category: "עוגות יום הולדת", price: 420, img: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?q=80&w=2070", desc: "החגיגה המושלמת. עוגת שוקולד עשירה מ-70% קקאו בלגי, שכבות של מוס נוגט וקרמו פרלינה. מעוטרת במקרונים בעבודת יד ופרחי שוקולד דרמטיים." },
-            { id: 3, name: "Le Mariage Éternel", category: "חתונות", price: 1500, img: "https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80&w=1936", desc: "עוגת חתונה קלאסית, מינימליסטית ועוצרת נשימה. 3 קומות של טעמים לבחירה, עטופות בקרם חמאה שוויצרי משיי, ועיטורי פרחי סוכר עדינים המפוסלים אחד-אחד." },
-            { id: 4, name: "Golden Citrus Sphere", category: "קינוחי ראווה", price: 380, img: "https://images.unsplash.com/photo-1559553156-2e97137ea163?q=80&w=2070", desc: "קינוח ראווה שגונב את ההצגה. מוס יוזו הדרים רענן, ליבת פטל חמצמצה, וקראנץ' פיסטוק סיציליאני בבסיס. הכל עטוף בציפוי מראה צהוב זוהר." },
-            { id: 5, name: "Weekend Prestige Box", category: "מארזי סוף שבוע", price: 490, img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1989", desc: "מארז הפרימיום המושלם לסוף השבוע או לאירוח יוקרתי. כולל פטיפורים מובחרים, 12 מקרונים קלאסיים, טארטלטים עונתיים ופרלינים במילויים מתחלפים." },
-            { id: 6, name: "Ruby Showpiece", category: "קינוחי ראווה", price: 320, img: "https://images.unsplash.com/photo-1626844131082-256783844137?q=80&w=1935", desc: "יצירה ורודה ומהפנטת המבוססת על שוקולד רובי טבעי. קרמו תות-שדה, מוס שוקולד לבן עדין, ותחתית ברטון פריכה." }
+            { id: 1, name: "The Pearl Signature", category: "חתימת השף", price: 550, img: "https://images.unsplash.com/photo-1535254973040-607b474cb80d?auto=format&fit=crop&w=800&q=75", desc: "עוגת הדגל שלנו. שכבות של ספוג וניל מדגסקר נימוח, קרם מסקרפונה עשיר, ופניני קראנץ' שוקולד לבן. מצופה בגלייז מבריק ועיטורי זהב 24 קראט." },
+            { id: 2, name: "Royal Birthday", category: "עוגות יום הולדת", price: 420, img: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&w=800&q=75", desc: "החגיגה המושלמת. עוגת שוקולד עשירה מ-70% קקאו בלגי, שכבות של מוס נוגט וקרמו פרלינה. מעוטרת במקרונים בעבודת יד ופרחי שוקולד דרמטיים." },
+            { id: 3, name: "Le Mariage Éternel", category: "חתונות", price: 1500, img: "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=800&q=75", desc: "עוגת חתונה קלאסית, מינימליסטית ועוצרת נשימה. 3 קומות של טעמים לבחירה, עטופות בקרם חמאה שוויצרי משיי, ועיטורי פרחי סוכר עדינים המפוסלים אחד-אחד." },
+            { id: 4, name: "Golden Citrus Sphere", category: "קינוחי ראווה", price: 380, img: "https://images.unsplash.com/photo-1559553156-2e97137ea163?auto=format&fit=crop&w=800&q=75", desc: "קינוח ראווה שגונב את ההצגה. מוס יוזו הדרים רענן, ליבת פטל חמצמצה, וקראנץ' פיסטוק סיציליאני בבסיס. הכל עטוף בציפוי מראה צהוב זוהר." },
+            { id: 5, name: "Weekend Prestige Box", category: "מארזי סוף שבוע", price: 490, img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=75", desc: "מארז הפרימיום המושלם לסוף השבוע או לאירוח יוקרתי. כולל פטיפורים מובחרים, 12 מקרונים קלאסיים, טארטלטים עונתיים ופרלינים במילויים מתחלפים." },
+            { id: 6, name: "Ruby Showpiece", category: "קינוחי ראווה", price: 320, img: "https://images.unsplash.com/photo-1626844131082-256783844137?auto=format&fit=crop&w=800&q=75", desc: "יצירה ורודה ומהפנטת המבוססת על שוקולד רובי טבעי. קרמו תות-שדה, מוס שוקולד לבן עדין, ותחתית ברטון פריכה." }
         ];
 
         // Google Reviews Data
@@ -656,19 +664,19 @@
             const items = category === 'הכל' ? catalogData : catalogData.filter(i => i.category === category);
             
             grid.innerHTML = items.map(item => `
-                <div class="group relative gsap-fade-up">
+                <div class="group relative gsap-fade-up gpu-accel">
                     <div class="relative h-[380px] sm:h-[450px] lg:h-[550px] mb-6 md:mb-8 overflow-hidden bg-dark-onyx rounded-sm shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
-                        <img src="${item.img}" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-all duration-1000 ease-out" loading="lazy">
+                        <img src="${item.img}" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-1000 ease-out smooth-image" loading="lazy" decoding="async" alt="${item.name}">
                         <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-dark-onyx/60 backdrop-blur-[4px]">
-                            <button onclick="openQuickView(${item.id})" class="bg-white text-dark-onyx px-8 py-3 w-48 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-pearl transition-colors hover-trigger magnetic-btn shadow-xl text-center">
+                            <button aria-label="צפייה מהירה במוצר" onclick="openQuickView(${item.id})" class="bg-white text-dark-onyx px-8 py-3 w-48 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-pearl transition-colors hover-trigger magnetic-btn shadow-xl text-center">
                                 צפייה מהירה
                             </button>
-                            <a href="YOUR_PAYPAL_LINK_HERE" target="_blank" class="bg-gold-primary text-dark-onyx px-8 py-3 w-48 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-gold-light transition-colors hover-trigger magnetic-btn shadow-xl text-center flex items-center justify-center gap-2">
+                            <a href="YOUR_PAYPAL_LINK_HERE" target="_blank" aria-label="רכישה ישירה בפייפאל" class="bg-gold-primary text-dark-onyx px-8 py-3 w-48 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-gold-light transition-colors hover-trigger magnetic-btn shadow-xl text-center flex items-center justify-center gap-2">
                                 רכישה ב-PayPal
                             </a>
                         </div>
                     </div>
-                    <div class="flex flex-col justify-between items-start cursor-pointer" onclick="openQuickView(${item.id})">
+                    <div class="flex flex-col justify-between items-start cursor-pointer" tabindex="0" aria-label="פתח פרטי מוצר ${item.name}" onclick="openQuickView(${item.id})" onkeypress="if(event.key === 'Enter') openQuickView(${item.id})">
                         <div class="w-full flex justify-between items-start mb-2">
                             <span class="text-gold-primary text-[10px] sm:text-xs uppercase tracking-widest font-bold">${item.category}</span>
                             <span class="text-xl sm:text-2xl font-light text-taupe font-serif">₪${item.price}</span>
@@ -815,8 +823,8 @@
             itemsContainer.innerHTML = cart.map(item => {
                 total += item.price * item.qty;
                 return `
-                <div class="flex gap-4 md:gap-6 items-center border-b border-dark-onyx/5 pb-4 md:pb-6">
-                    <img src="${item.img}" class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-sm">
+                <div class="flex gap-4 md:gap-6 items-center border-b border-dark-onyx/5 pb-4 md:pb-6 gpu-accel">
+                    <img src="${item.img}" class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-sm smooth-image" loading="lazy" alt="${item.name}">
                     <div class="flex-1">
                         <h4 class="font-serif italic text-xl md:text-2xl text-dark-onyx">${item.name}</h4>
                         <div class="flex justify-between items-center mt-2 md:mt-3">
@@ -824,7 +832,7 @@
                             <span class="text-base md:text-lg font-bold text-dark-onyx">₪${item.price * item.qty}</span>
                         </div>
                     </div>
-                    <button onclick="removeFromCart(${item.id})" class="text-taupe hover:text-red-500 transition-colors p-2 md:p-3 hover-trigger">
+                    <button aria-label="הסר מוצר מסל הקניות" onclick="removeFromCart(${item.id})" class="text-taupe hover:text-red-500 transition-colors p-2 md:p-3 hover-trigger">
                         <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
