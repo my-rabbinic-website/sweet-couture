@@ -40,10 +40,11 @@
     </script>
     <style>
         /* Base Styling & Custom Scrollbar */
-        body { background-color: #F9F8F6; font-family: 'Assistant', sans-serif; cursor: none; overflow-x: hidden; }
-        ::-webkit-scrollbar { width: 10px; }
+        body { background-color: #F9F8F6; font-family: 'Assistant', sans-serif; cursor: auto; overflow-x: hidden; }
+        @media (min-width: 1024px) { body { cursor: none; } }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #111111; }
-        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
 
         /* Typography Enhancements */
         .font-serif { font-family: 'Bodoni Moda', serif; }
@@ -101,9 +102,18 @@
         
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Premium Text Shadow for Hero */
+        .text-shadow-premium { text-shadow: 0 15px 30px rgba(0,0,0,0.6); }
+
+        /* FAQ Accordion Styling */
+        .faq-answer { overflow: hidden; height: 0; opacity: 0; }
     </style>
 </head>
 <body class="noise-bg">
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[2px] bg-gold-primary z-[9999] origin-left scale-x-0"></div>
 
     <!-- Custom Cursor -->
     <div id="cursor" class="hidden lg:block"></div>
@@ -117,35 +127,32 @@
     </div>
 
     <!-- Header Navigation -->
-    <header id="main-header" class="fixed top-0 w-full z-[5000] py-6 px-6 md:px-12 mix-blend-difference text-white transition-all duration-500">
+    <header id="main-header" class="fixed top-0 w-full z-[4000] py-6 px-6 md:px-12 text-white transition-all duration-500 bg-transparent">
         <div class="max-w-[1800px] mx-auto flex justify-between items-center">
             <div class="flex-1 hidden lg:flex gap-10 text-xs uppercase tracking-[0.3em] font-bold">
-                <a href="#catalog" class="hover-trigger relative group">
+                <a href="#catalog" class="hover-trigger relative group text-white hover:text-gold-primary transition-colors text-shadow-premium">
                     קולקציות
-                    <span class="absolute -bottom-1 right-0 w-0 h-[1.5px] bg-white transition-all duration-300 group-hover:w-full"></span>
                 </a>
-                <a href="#process" class="hover-trigger relative group">
+                <a href="#process" class="hover-trigger relative group text-white hover:text-gold-primary transition-colors text-shadow-premium">
                     האטלייה
-                    <span class="absolute -bottom-1 right-0 w-0 h-[1.5px] bg-white transition-all duration-300 group-hover:w-full"></span>
                 </a>
-                <a href="#reviews" class="hover-trigger relative group">
+                <a href="#reviews" class="hover-trigger relative group text-white hover:text-gold-primary transition-colors text-shadow-premium">
                     לקוחות
-                    <span class="absolute -bottom-1 right-0 w-0 h-[1.5px] bg-white transition-all duration-300 group-hover:w-full"></span>
                 </a>
             </div>
             
-            <a href="#" class="text-3xl md:text-4xl font-serif italic text-center flex-1 hover-trigger magnetic-btn">
-                Sweet Couture <span class="block text-xs not-italic tracking-[0.6em] uppercase font-sans mt-2 opacity-70">Studio</span>
+            <a href="#" class="text-3xl md:text-4xl font-serif italic text-center flex-1 hover-trigger magnetic-btn text-white text-shadow-premium">
+                Sweet Couture <span class="block text-xs not-italic tracking-[0.6em] uppercase font-sans mt-2 opacity-90">Studio</span>
             </a>
 
-            <div class="flex-1 flex justify-end items-center gap-4 md:gap-8">
+            <div class="flex-1 flex justify-end items-center gap-4 md:gap-8 text-white">
                 <!-- Mobile Menu Toggle -->
-                <button onclick="toggleMobileMenu()" class="lg:hidden hover-trigger relative flex items-center justify-center p-2 z-[6000]">
+                <button onclick="toggleMobileMenu()" aria-label="פתח תפריט" class="lg:hidden hover-trigger relative flex items-center justify-center p-2 z-[6000] text-shadow-premium">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <!-- Cart Icon -->
-                <button onclick="toggleCart()" class="hover-trigger relative flex items-center gap-2 md:gap-3">
-                    <span id="cart-count" class="absolute -top-3 -right-3 bg-gold-primary text-dark-onyx text-[10px] md:text-xs w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full font-bold opacity-0 transition-opacity">0</span>
+                <button onclick="toggleCart()" aria-label="פתח סל קניות" class="hover-trigger relative flex items-center gap-2 md:gap-3 hover:text-gold-primary transition-colors text-shadow-premium">
+                    <span id="cart-count" class="absolute -top-3 -right-3 bg-gold-primary text-dark-onyx text-[10px] md:text-xs w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full font-bold opacity-0 transition-opacity shadow-sm">0</span>
                     <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                     <span class="hidden md:block text-xs uppercase tracking-widest font-bold">סל קניות</span>
                 </button>
@@ -189,11 +196,11 @@
                 <span class="font-light text-dark-onyx">סך הכל:</span>
                 <span id="cart-total" class="font-serif italic text-2xl md:text-3xl text-dark-onyx">₪0</span>
             </div>
-            <button onclick="checkoutViaWhatsapp()" class="w-full py-5 md:py-6 bg-dark-onyx text-white font-bold text-xs md:text-sm uppercase tracking-[0.2em] hover:bg-gold-primary transition-all flex justify-center items-center gap-3 magnetic-btn hover-trigger">
-                <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                מעבר לתשלום בוואטסאפ
+            <button onclick="checkoutViaPaypal()" class="w-full py-5 md:py-6 bg-dark-onyx text-white font-bold text-xs md:text-sm uppercase tracking-[0.2em] hover:bg-gold-primary transition-all flex justify-center items-center gap-3 magnetic-btn hover-trigger">
+                <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.11c-.473 0-.867.319-.98.777l-.956 3.98-.41 2.007a.645.645 0 0 1-.63.513h-.274zM8.348 7.09c.112-.458.506-.777.98-.777h2.11c4.298 0 7.664-1.747 8.647-6.797.03-.15.054-.294.077-.437-1.155 4.887-4.666 7.625-9.356 7.625h-1.5c-.946 0-1.734.638-1.96 1.554l-1.34 5.584c-.056.233.118.455.358.455h2.528c.473 0 .867-.319.98-.777l1.042-4.34c.112-.458.506-.777.98-.777h1.46z"/></svg>
+                תשלום מאובטח ב-PayPal
             </button>
-            <p class="text-center text-[10px] md:text-xs text-taupe mt-4 md:mt-5 font-bold">משלוחי VIP בנתיבות, שדרות והסביבה</p>
+            <p class="text-center text-[10px] md:text-xs text-taupe mt-4 md:mt-5 font-bold">הזמנות VIP לכל חלקי הארץ</p>
         </div>
     </div>
 
@@ -205,33 +212,41 @@
                 <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             
-            <div class="w-full md:w-1/2 h-[40vh] sm:h-[45%] md:h-full relative overflow-hidden bg-dark-onyx flex-shrink-0">
-                <img id="qv-img" src="" class="w-full h-full object-cover">
+            <div class="w-full md:w-1/2 h-[35vh] sm:h-[45%] md:h-full relative overflow-hidden bg-dark-onyx flex-shrink-0">
+                <img id="qv-img" src="" class="w-full h-full object-cover" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-dark-onyx/40 to-transparent pointer-events-none"></div>
             </div>
             
-            <div class="w-full md:w-1/2 h-[60vh] sm:h-[55%] md:h-full p-6 sm:p-8 md:p-14 flex flex-col bg-pearl overflow-y-auto">
-                <span id="qv-category" class="text-gold-primary text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase mb-2 md:mb-4 font-bold block">Category</span>
-                <h2 id="qv-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-dark-onyx mb-2 md:mb-4 leading-tight">Title</h2>
-                <p id="qv-price" class="text-xl md:text-3xl font-light text-taupe mb-6 md:mb-8">₪0</p>
+            <div class="w-full md:w-1/2 flex flex-col bg-pearl h-[65vh] sm:h-[55%] md:h-full relative">
+                <!-- Scrollable Description Area -->
+                <div class="p-6 sm:p-8 md:p-12 overflow-y-auto flex-1 pb-32 md:pb-36">
+                    <span id="qv-category" class="text-gold-primary text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase mb-2 md:mb-4 font-bold block">Category</span>
+                    <h2 id="qv-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-dark-onyx mb-2 md:mb-4 leading-tight">Title</h2>
+                    <p id="qv-price" class="text-xl md:text-3xl font-light text-taupe mb-6 md:mb-8">₪0</p>
+                    
+                    <div class="w-12 md:w-16 h-[1px] bg-gold-primary/50 mb-6 md:mb-8"></div>
+                    
+                    <p id="qv-desc" class="text-dark-onyx/80 font-light leading-relaxed text-base md:text-lg">Description...</p>
+                </div>
                 
-                <div class="w-12 md:w-16 h-[1px] bg-gold-primary/50 mb-6 md:mb-8"></div>
-                
-                <p id="qv-desc" class="text-dark-onyx/80 font-light mb-8 leading-relaxed text-base md:text-lg flex-grow">Description...</p>
-                
-                <div class="mt-auto pt-4 border-t border-dark-onyx/10 md:border-none md:pt-0">
-                    <label class="block text-[10px] md:text-xs uppercase tracking-widest text-taupe mb-3 md:mb-4">כמות</label>
+                <!-- Sticky Action Area at Bottom -->
+                <div class="absolute bottom-0 left-0 w-full bg-pearl/95 backdrop-blur-md border-t border-dark-onyx/10 p-6 sm:p-8 md:px-12 md:py-6">
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 md:gap-6">
-                        <div class="flex items-center border border-dark-onyx/20 rounded-full h-12 md:h-14 w-full sm:w-32">
+                        <div class="flex items-center border border-dark-onyx/20 rounded-full h-12 md:h-14 w-full sm:w-32 bg-white shrink-0">
                             <button onclick="updateQvQty(-1)" class="flex-1 h-full flex items-center justify-center text-dark-onyx hover:text-gold-primary transition-colors text-xl">-</button>
                             <span id="qv-qty" class="font-bold text-dark-onyx text-lg w-8 text-center">1</span>
                             <button onclick="updateQvQty(1)" class="flex-1 h-full flex items-center justify-center text-dark-onyx hover:text-gold-primary transition-colors text-xl">+</button>
                         </div>
                         
-                        <button onclick="addFromQuickView()" class="flex-1 bg-dark-onyx text-white h-12 md:h-14 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.2em] hover:bg-gold-primary transition-colors flex items-center justify-center gap-2 md:gap-3 magnetic-btn hover-trigger">
-                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                            הוסף לעגלה
-                        </button>
+                        <div class="flex flex-col sm:flex-row flex-1 gap-4">
+                            <button onclick="addFromQuickView()" class="flex-1 bg-white border border-dark-onyx text-dark-onyx h-12 md:h-14 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.1em] hover:bg-dark-onyx hover:text-white transition-colors flex items-center justify-center gap-2 magnetic-btn hover-trigger">
+                                <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                                הוסף לעגלה
+                            </button>
+                            <a href="YOUR_PAYPAL_LINK_HERE" target="_blank" class="flex-1 bg-gold-primary text-dark-onyx h-12 md:h-14 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.1em] hover:bg-gold-light transition-colors flex items-center justify-center gap-2 magnetic-btn hover-trigger shadow-lg">
+                                קנה עכשיו ב-PayPal
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,13 +263,13 @@
             
             <div class="relative z-10 text-center text-white px-4 md:px-6 w-full mt-20">
                 <div class="overflow-hidden mb-4 md:mb-6">
-                    <h3 class="clip-text font-serif italic text-2xl sm:text-3xl md:text-5xl text-gold-primary">The Art of Fine Pastry</h3>
+                    <h3 class="clip-text font-serif italic text-2xl sm:text-3xl md:text-5xl text-gold-primary text-shadow-premium">The Art of Fine Pastry</h3>
                 </div>
                 <div class="overflow-hidden mb-6 md:mb-10">
-                    <h1 class="clip-text text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] font-serif leading-none tracking-tighter drop-shadow-lg">Couture.</h1>
+                    <h1 class="clip-text text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] font-serif leading-none tracking-tighter drop-shadow-2xl text-shadow-premium">Couture.</h1>
                 </div>
                 <div class="overflow-hidden mb-10 md:mb-16">
-                    <p class="clip-text text-pearl/90 text-lg sm:text-2xl md:text-3xl font-light max-w-3xl mx-auto leading-relaxed drop-shadow-md px-2">
+                    <p class="clip-text text-pearl/90 text-lg sm:text-2xl md:text-3xl font-light max-w-3xl mx-auto leading-relaxed text-shadow-premium px-2">
                         קונדיטוריית הבוטיק של נתיבות והדרום. <br class="hidden sm:block"> יצירות מופת של טעם ועיצוב לאירועים בלתי נשכחים.
                     </p>
                 </div>
@@ -293,7 +308,7 @@
         <!-- Process / Story Section -->
         <section id="process" class="py-24 md:py-40 bg-dark-onyx text-white relative overflow-hidden">
             <div class="absolute right-0 top-0 w-full md:w-1/2 h-full opacity-10 md:opacity-20">
-                <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965" class="w-full h-full object-cover mix-blend-luminosity parallax-img">
+                <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965" class="w-full h-full object-cover mix-blend-luminosity parallax-img" loading="lazy">
             </div>
             <div class="container mx-auto px-4 sm:px-6 md:px-12 relative z-10">
                 <div class="max-w-3xl">
@@ -324,21 +339,85 @@
                 <div class="flex items-center justify-center gap-3 md:gap-4 text-xl md:text-2xl font-bold text-dark-onyx">
                     <span>דירוג 5.0</span>
                     <div class="flex text-gold-primary">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                     </div>
                 </div>
             </div>
 
             <div class="marquee-container overflow-hidden flex w-full relative pt-4 pb-12 cursor-grab active:cursor-grabbing">
-                <div class="absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-pearl to-transparent z-10 pointer-events-none"></div>
-                <div class="absolute inset-y-0 right-0 w-32 md:w-64 bg-gradient-to-l from-pearl to-transparent z-10 pointer-events-none"></div>
+                <div class="absolute inset-y-0 left-0 w-16 md:w-64 bg-gradient-to-r from-pearl to-transparent z-10 pointer-events-none"></div>
+                <div class="absolute inset-y-0 right-0 w-16 md:w-64 bg-gradient-to-l from-pearl to-transparent z-10 pointer-events-none"></div>
                 
-                <div class="marquee-track gap-8 px-4" id="reviews-track">
+                <div class="marquee-track gap-4 md:gap-8 px-4" id="reviews-track">
                     <!-- Reviews injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-24 md:py-40 bg-dark-onyx text-pearl relative overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl relative z-10">
+                <div class="text-center mb-16 md:mb-24 gsap-fade-up">
+                    <span class="text-gold-primary font-tradition tracking-[0.2em] sm:tracking-[0.4em] mb-4 uppercase text-xs sm:text-sm font-bold block">Informations</span>
+                    <h2 class="text-4xl sm:text-5xl md:text-7xl font-serif italic text-white">שאלות נפוצות</h2>
+                </div>
+
+                <div class="space-y-6 md:space-y-8">
+                    <!-- FAQ Item 1 -->
+                    <div class="border-b border-white/20 pb-6 gsap-fade-up">
+                        <button onclick="toggleFaq(this)" class="w-full flex justify-between items-center text-right hover-trigger group">
+                            <h3 class="text-xl md:text-3xl font-serif italic text-white group-hover:text-gold-primary transition-colors">כמה זמן מראש מומלץ לבצע הזמנה?</h3>
+                            <span class="text-gold-primary text-2xl font-light transform transition-transform duration-500 pointer-events-none">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="pt-6 text-white/70 font-light text-base md:text-xl leading-relaxed">
+                                אנו ממליצים לבצע הזמנה לפחות 7 ימים מראש עבור מארזים ועוגות ראווה, ושבועיים מראש עבור עוגות חתונה או אירועים מרובי משתתפים, על מנת שנוכל להבטיח את הדיוק המרבי ביצירה.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 2 -->
+                    <div class="border-b border-white/20 pb-6 gsap-fade-up">
+                        <button onclick="toggleFaq(this)" class="w-full flex justify-between items-center text-right hover-trigger group">
+                            <h3 class="text-xl md:text-3xl font-serif italic text-white group-hover:text-gold-primary transition-colors">לאילו אזורים אתם מבצעים משלוחים?</h3>
+                            <span class="text-gold-primary text-2xl font-light transform transition-transform duration-500 pointer-events-none">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="pt-6 text-white/70 font-light text-base md:text-xl leading-relaxed">
+                                שירות שליחי ה-VIP שלנו מגיע לנתיבות, שדרות, אופקים והמושבים בסביבה. המשלוח מתבצע ברכב ממוזג ומפוקח כדי להבטיח שהיצירה שלכם תגיע במצב מושלם.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="border-b border-white/20 pb-6 gsap-fade-up">
+                        <button onclick="toggleFaq(this)" class="w-full flex justify-between items-center text-right hover-trigger group">
+                            <h3 class="text-xl md:text-3xl font-serif italic text-white group-hover:text-gold-primary transition-colors">האם ניתן לעצב עוגה מותאמת אישית?</h3>
+                            <span class="text-gold-primary text-2xl font-light transform transition-transform duration-500 pointer-events-none">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="pt-6 text-white/70 font-light text-base md:text-xl leading-relaxed">
+                                בהחלט. אנו מתמחים ב-"הוט קוטור" קולינרי. צרו איתנו קשר דרך טופס "הזמנה פרטית" או בוואטסאפ, ונשמח לרקום יחד את החזון שלכם לכדי יצירה ייחודית.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="border-b border-white/20 pb-6 gsap-fade-up">
+                        <button onclick="toggleFaq(this)" class="w-full flex justify-between items-center text-right hover-trigger group">
+                            <h3 class="text-xl md:text-3xl font-serif italic text-white group-hover:text-gold-primary transition-colors">מידע על אלרגנים ורגישויות</h3>
+                            <span class="text-gold-primary text-2xl font-light transform transition-transform duration-500 pointer-events-none">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p class="pt-6 text-white/70 font-light text-base md:text-xl leading-relaxed">
+                                האטלייה שלנו עובד עם מגוון חומרי גלם הכוללים: אגוזים, שקדים, גלוטן, חלב, ביצים ושוקולד. לצערנו לא נוכל להבטיח סביבה סטרילית לחלוטין מעקבות אלרגנים אלו.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -378,23 +457,34 @@
     </main>
 
     <footer class="bg-[#0a0a0a] text-white py-16 md:py-24 px-4 sm:px-6 text-center">
+        <div class="max-w-2xl mx-auto mb-16 md:mb-20">
+            <h3 class="text-gold-primary text-xs uppercase tracking-widest font-bold mb-4">Le Club Privé</h3>
+            <p class="text-white/60 font-light mb-8 text-sm md:text-base">הצטרפו למועדון הלקוחות האקסקלוסיבי שלנו וקבלו עדכונים על קולקציות חדשות, הטבות ואירועי טעימות לפני כולם.</p>
+            <form onsubmit="handleSubscribe(event)" class="flex items-center border-b border-white/30 pb-2 transition-colors focus-within:border-gold-primary group relative">
+                <input type="email" required placeholder="כתובת האימייל שלכם" class="bg-transparent border-none outline-none flex-1 text-white placeholder-white/40 text-center font-light text-sm md:text-base">
+                <button type="submit" class="absolute left-0 text-gold-primary uppercase tracking-widest text-[10px] font-bold hover:text-white transition-colors">הרשמה</button>
+            </form>
+        </div>
+
         <h2 class="text-4xl md:text-5xl font-serif italic mb-6 md:mb-8">Sweet Couture</h2>
-        <p class="text-white/50 text-xs md:text-sm tracking-widest uppercase mb-8 md:mb-12">יצחק שמיר 15, נתיבות | r.levi020@gmail.com</p>
+        <p class="text-white/50 text-xs md:text-sm tracking-widest uppercase mb-8 md:mb-12">
+            יצחק שמיר 15, נתיבות | <a href="mailto:r.levi020@gmail.com" class="hover:text-gold-primary transition-colors">r.levi020@gmail.com</a>
+        </p>
         <div class="flex justify-center gap-6 md:gap-10 mb-12 md:mb-16">
             <a href="#" class="text-white/70 hover:text-gold-primary text-xs md:text-sm uppercase tracking-widest transition-colors hover-trigger">Instagram</a>
-            <a href="#" class="text-white/70 hover:text-gold-primary text-xs md:text-sm uppercase tracking-widest transition-colors hover-trigger">WhatsApp</a>
+            <a href="#" class="text-white/70 hover:text-gold-primary text-xs md:text-sm uppercase tracking-widest transition-colors hover-trigger">Facebook</a>
         </div>
         <p class="text-white/30 text-[9px] md:text-[11px] tracking-[0.2em] md:tracking-[0.4em] uppercase">© 2024 SWEET COUTURE STUDIO. ALL RIGHTS RESERVED.</p>
     </footer>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-dark-onyx text-white px-10 py-5 rounded-full text-base tracking-wide shadow-2xl transform translate-y-[200%] opacity-0 transition-all duration-500 z-[9000] flex items-center gap-4 border border-white/10">
-        <span id="toast-icon" class="text-xl">✨</span>
+    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-dark-onyx text-white px-8 md:px-10 py-4 md:py-5 rounded-full text-sm md:text-base tracking-wide shadow-2xl transform translate-y-[200%] opacity-0 transition-all duration-500 z-[9000] flex items-center gap-3 md:gap-4 border border-white/10 whitespace-nowrap">
+        <span id="toast-icon" class="text-lg md:text-xl">✨</span>
         <span id="toast-msg"></span>
     </div>
 
     <script>
-        // --- DATA WITH NEW CATEGORIES ---
+        // --- DATA WITH CATEGORIES ---
         const catalogData = [
             { id: 1, name: "The Pearl Signature", category: "חתימת השף", price: 550, img: "https://images.unsplash.com/photo-1535254973040-607b474cb80d?q=80&w=1974", desc: "עוגת הדגל שלנו. שכבות של ספוג וניל מדגסקר נימוח, קרם מסקרפונה עשיר, ופניני קראנץ' שוקולד לבן. מצופה בגלייז מבריק ועיטורי זהב 24 קראט." },
             { id: 2, name: "Royal Birthday", category: "עוגות יום הולדת", price: 420, img: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?q=80&w=2070", desc: "החגיגה המושלמת. עוגת שוקולד עשירה מ-70% קקאו בלגי, שכבות של מוס נוגט וקרמו פרלינה. מעוטרת במקרונים בעבודת יד ופרחי שוקולד דרמטיים." },
@@ -416,7 +506,7 @@
         let cart = [];
         let currentQvItem = null;
         let currentQvQty = 1;
-        let lenis; // Global lenis instance
+        let lenis; 
 
         // --- INIT ---
         window.onload = () => {
@@ -426,6 +516,7 @@
             renderReviews();
             setupCursorAndMagnetics();
             loadCart();
+            setupHeaderScroll();
         };
 
         // --- SMOOTH SCROLL (LENIS) ---
@@ -440,6 +531,33 @@
             gsap.ticker.lagSmoothing(0, 0);
         }
 
+        // --- DYNAMIC HEADER ---
+        function setupHeaderScroll() {
+            const header = document.getElementById('main-header');
+            const progressBar = document.getElementById('scroll-progress');
+            
+            window.addEventListener('scroll', () => {
+                // Progress Bar Logic
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height);
+                progressBar.style.transform = `scaleX(${scrolled})`;
+
+                // Header Background Logic
+                if(window.scrollY > 50) {
+                    header.classList.add('bg-dark-onyx/90', 'backdrop-blur-md', 'py-4', 'shadow-md');
+                    header.classList.remove('py-6', 'bg-transparent');
+                    // מסירים את ההצללה מהטקסט כשהרקע כהה
+                    header.querySelectorAll('.text-shadow-premium').forEach(el => el.classList.remove('text-shadow-premium'));
+                } else {
+                    header.classList.remove('bg-dark-onyx/90', 'backdrop-blur-md', 'py-4', 'shadow-md');
+                    header.classList.add('py-6', 'bg-transparent');
+                    // מחזירים את ההצללה כשהרקע שקוף
+                    header.querySelectorAll('.hover-trigger, a, button').forEach(el => el.classList.add('text-shadow-premium'));
+                }
+            });
+        }
+
         // --- PRELOADER & GSAP ANIMATIONS ---
         function runPreloader() {
             const tl = gsap.timeline();
@@ -451,8 +569,16 @@
             gsap.to(".hero-bg", { yPercent: 20, ease: "none", scrollTrigger: { trigger: ".hero-bg", start: "top top", end: "bottom top", scrub: true } });
             gsap.to(".parallax-img", { yPercent: 30, ease: "none", scrollTrigger: { trigger: "#process", start: "top bottom", end: "bottom top", scrub: true } });
             
+            // שדרוג האנימציה - הוספת סיבוב זעיר ואפקט קפיץ רך
             gsap.utils.toArray('.gsap-fade-up').forEach(elem => {
-                gsap.from(elem, { y: 50, opacity: 0, duration: 1, scrollTrigger: { trigger: elem, start: "top 85%", toggleActions: "play none none reverse" } });
+                gsap.from(elem, { 
+                    y: 60, 
+                    opacity: 0, 
+                    rotation: 2, 
+                    duration: 1.2, 
+                    ease: "power3.out",
+                    scrollTrigger: { trigger: elem, start: "top 85%", toggleActions: "play none none reverse" } 
+                });
             });
         }
 
@@ -532,11 +658,14 @@
             grid.innerHTML = items.map(item => `
                 <div class="group relative gsap-fade-up">
                     <div class="relative h-[380px] sm:h-[450px] lg:h-[550px] mb-6 md:mb-8 overflow-hidden bg-dark-onyx rounded-sm shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
-                        <img src="${item.img}" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-all duration-1000 ease-out">
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-dark-onyx/40 backdrop-blur-[4px]">
-                            <button onclick="openQuickView(${item.id})" class="bg-white text-dark-onyx px-8 py-4 sm:px-10 sm:py-5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-gold-primary hover:text-white transition-colors hover-trigger magnetic-btn shadow-xl">
+                        <img src="${item.img}" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-all duration-1000 ease-out" loading="lazy">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-dark-onyx/60 backdrop-blur-[4px]">
+                            <button onclick="openQuickView(${item.id})" class="bg-white text-dark-onyx px-8 py-3 w-48 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-pearl transition-colors hover-trigger magnetic-btn shadow-xl text-center">
                                 צפייה מהירה
                             </button>
+                            <a href="YOUR_PAYPAL_LINK_HERE" target="_blank" class="bg-gold-primary text-dark-onyx px-8 py-3 w-48 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-gold-light transition-colors hover-trigger magnetic-btn shadow-xl text-center flex items-center justify-center gap-2">
+                                רכישה ב-PayPal
+                            </a>
                         </div>
                     </div>
                     <div class="flex flex-col justify-between items-start cursor-pointer" onclick="openQuickView(${item.id})">
@@ -571,6 +700,36 @@
             }
         }
 
+        // --- FAQ ACCORDION LOGIC ---
+        function toggleFaq(button) {
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('span');
+            const isOpen = answer.style.height && answer.style.height !== '0px';
+
+            // Close all others
+            document.querySelectorAll('.faq-answer').forEach(el => {
+                if (el !== answer) {
+                    gsap.to(el, { height: 0, opacity: 0, duration: 0.4, ease: "power2.inOut" });
+                    el.previousElementSibling.querySelector('span').style.transform = "rotate(0deg)";
+                }
+            });
+
+            // Toggle current
+            if (isOpen) {
+                gsap.to(answer, { height: 0, opacity: 0, duration: 0.4, ease: "power2.inOut" });
+                icon.style.transform = "rotate(0deg)";
+            } else {
+                gsap.set(answer, { height: "auto" });
+                const fullHeight = answer.clientHeight;
+                gsap.set(answer, { height: 0 });
+                gsap.to(answer, { height: fullHeight, opacity: 1, duration: 0.5, ease: "power2.out" });
+                icon.style.transform = "rotate(45deg)";
+                
+                // Refresh scroll triggers so sections below adapt
+                setTimeout(() => ScrollTrigger.refresh(), 500);
+            }
+        }
+
         // --- QUICK VIEW MODAL LOGIC ---
         function openQuickView(id) {
             currentQvItem = catalogData.find(i => i.id === id);
@@ -594,7 +753,9 @@
             const modal = document.getElementById('quickview-modal');
             modal.classList.remove('active');
             setTimeout(() => modal.classList.add('invisible'), 400);
-            if(lenis) lenis.start();
+            if(!document.getElementById('cart-drawer').classList.contains('open') && lenis) {
+                lenis.start();
+            }
             currentQvItem = null;
         }
 
@@ -654,17 +815,17 @@
             itemsContainer.innerHTML = cart.map(item => {
                 total += item.price * item.qty;
                 return `
-                <div class="flex gap-6 items-center border-b border-dark-onyx/5 pb-6">
-                    <img src="${item.img}" class="w-24 h-24 object-cover rounded-sm">
+                <div class="flex gap-4 md:gap-6 items-center border-b border-dark-onyx/5 pb-4 md:pb-6">
+                    <img src="${item.img}" class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-sm">
                     <div class="flex-1">
-                        <h4 class="font-serif italic text-2xl text-dark-onyx">${item.name}</h4>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-base text-taupe">כמות: ${item.qty}</span>
-                            <span class="text-lg font-bold text-dark-onyx">₪${item.price * item.qty}</span>
+                        <h4 class="font-serif italic text-xl md:text-2xl text-dark-onyx">${item.name}</h4>
+                        <div class="flex justify-between items-center mt-2 md:mt-3">
+                            <span class="text-sm md:text-base text-taupe">כמות: ${item.qty}</span>
+                            <span class="text-base md:text-lg font-bold text-dark-onyx">₪${item.price * item.qty}</span>
                         </div>
                     </div>
-                    <button onclick="removeFromCart(${item.id})" class="text-taupe hover:text-red-500 transition-colors p-3 hover-trigger">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <button onclick="removeFromCart(${item.id})" class="text-taupe hover:text-red-500 transition-colors p-2 md:p-3 hover-trigger">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
             `}).join('');
@@ -690,19 +851,17 @@
             }
         }
 
-        function checkoutViaWhatsapp() {
+        function checkoutViaPaypal() {
             if(cart.length === 0) return showToast('העגלה ריקה');
             
-            let text = "היי Sweet Couture! 🍰\nאשמח לבצע הזמנה:\n\n";
-            let total = 0;
+            let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             
-            cart.forEach(item => {
-                text += `▪️ ${item.qty}x ${item.name} - ₪${item.price * item.qty}\n`;
-                total += item.price * item.qty;
-            });
+            showToast('מעביר אותך לתשלום מאובטח ב-PayPal...');
             
-            text += `\nסה"כ לתשלום: *₪${total}*\n\nאשמח לפרטים לגבי תשלום ומשלוח.`;
-            window.open(`https://wa.me/972525000285?text=${encodeURIComponent(text)}`, '_blank');
+            // יש להחליף את YOUR_PAYPAL_USERNAME לשם המשתמש שלך ב-PayPal
+            setTimeout(() => {
+                window.open(`https://paypal.me/YOUR_PAYPAL_USERNAME/${total}ILS`, '_blank');
+            }, 1500);
         }
 
         // --- UTILS ---
@@ -719,13 +878,36 @@
 
         function handleContactSubmit(e) {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
             btn.innerText = 'שולח...';
-            setTimeout(() => {
-                showToast('הבקשה נשלחה! השף יחזור אליכם בהקדם.');
-                e.target.reset();
-                btn.innerText = 'שליחת בקשה לאטלייה';
-            }, 1000); 
+            btn.disabled = true;
+
+            // Fetch to Formspree
+            fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    showToast('הבקשה נשלחה! השף יחזור אליכם בהקדם.');
+                    form.reset();
+                } else {
+                    showToast('אירעה שגיאה בשליחה. ניתן ליצור קשר בוואטסאפ.');
+                }
+            }).catch(error => {
+                showToast('שגיאת תקשורת. נא נסו שוב מאוחר יותר.');
+            }).finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            showToast('ברוכים הבאים למועדון ה-VIP שלנו! 🥂');
+            e.target.reset();
         }
     </script>
 </body>
